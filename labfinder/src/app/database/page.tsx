@@ -17,7 +17,7 @@ const labs: Lab[] = [
     "name": "Adam Boies",
     "major": "Mechanical Engineering",
     "keywords": "Aerosols, Nanotechnology, Energy Storage, Sustainable Nanocarbons, Self-Assembled Materials, Nanoparticles, Pollution, Air Quality, Catalysis, Carbon Nanotubes,  Engineered Nanoparticles,  Gas-Phase Nanoparticles,  Metrology, Modeling,  Nanocarbon Synthesis, Battery Technology, Transportation Emissions,  Aerosol Science,  Particle Dynamics,  Environmental Technology",
-    "introduction": "The Aerosol and Nanotechnology for Energy and the Environment (ANEE) group at Stanford is a leading research entity focused on developing innovative energy and environmental technologies leveraging the unique properties of aerosols and nanomaterials.  Their research spans a broad spectrum, from fundamental scientific investigations into aerosol behavior and nanoparticle interactions to the development of practical applications in energy storage, catalysis, and pollution mitigation.  The group\u2019s interdisciplinary approach integrates expertise in chemistry, physics, engineering, and materials science to address critical challenges facing both energy production and environmental sustainability.\n\nA core area of ANEE's research involves the synthesis and characterization of sustainable nanocarbons. This includes the exploration of novel methods for producing carbon nanotubes and other nanocarbon materials with tailored properties for energy applications, such as high-capacity electrodes for batteries or efficient catalysts for fuel cells.  Their research extends beyond simple synthesis, encompassing investigations into the structure-property relationships of these materials and the development of scalable and cost-effective manufacturing processes.  This aspect directly contributes to the advancement of sustainable energy technologies by providing high-performance materials with a reduced environmental footprint.\n\nAnother significant area of focus is energy storage. The group investigates the use of engineered nanoparticles and self-assembled materials for enhancing the performance of batteries and other energy storage devices. This involves studying the impact of nanoparticle size, shape, and surface chemistry on electrochemical properties such as capacity, rate capability, and cycle life.  Their methodologies range from experimental synthesis and characterization to advanced computational modeling to predict and optimize battery performance.  This research is crucial for developing next-generation energy storage systems that are more efficient, durable, and environmentally friendly.\n\nFurthermore, ANEE contributes significantly to advancing our understanding of aerosols and their impact on the environment. The group utilizes advanced metrology and modeling techniques to study the formation, evolution, and dynamics of gas-phase nanoparticles, particularly those related to pollution. This involves investigating the sources, transport, and transformation of atmospheric aerosols, and their impact on air quality and climate change. This research provides critical insights into developing effective strategies for reducing pollution and improving air quality, with applications ranging from developing more efficient emission control technologies for transportation to understanding the role of aerosols in climate change.\n\nThe group's work on catalysis explores the use of engineered nanoparticles and nanostructured materials as catalysts for various chemical reactions, particularly those relevant to energy applications. This encompasses both fundamental studies of catalytic mechanisms and the development of novel catalytic materials with enhanced activity and selectivity. The expertise in catalysis coupled with their work on nanomaterials significantly enhances the efficiency of energy conversion processes and helps to reduce environmental impact.\n\nThe ANEE group's research significantly contributes to the field through its interdisciplinary approach, state-of-the-art facilities, and collaborations with leading researchers and industry partners.  The integration of fundamental scientific research with practical applications positions the group as a key player in translating cutting-edge science into real-world solutions for a more sustainable future. Their contributions range from developing new materials and technologies to providing critical insights into complex environmental phenomena. The group\u2019s commitment to both fundamental understanding and technological innovation ensures that their research will continue to have a significant impact on the fields of energy and environmental science.\n\n\n=================================================="
+    "introduction": "The Aerosol and Nanotechnology for Energy and the Environment (ANEE) group at [University Name -  not specified in provided text] is a leading research entity focused on developing innovative energy and environmental technologies leveraging the unique properties of aerosols and nanomaterials.  Their research spans a broad spectrum, from fundamental scientific investigations into aerosol behavior and nanoparticle interactions to the development of practical applications in energy storage, catalysis, and pollution mitigation.  The group\u2019s interdisciplinary approach integrates expertise in chemistry, physics, engineering, and materials science to address critical challenges facing both energy production and environmental sustainability.\n\nA core area of ANEE's research involves the synthesis and characterization of sustainable nanocarbons. This includes the exploration of novel methods for producing carbon nanotubes and other nanocarbon materials with tailored properties for energy applications, such as high-capacity electrodes for batteries or efficient catalysts for fuel cells.  Their research extends beyond simple synthesis, encompassing investigations into the structure-property relationships of these materials and the development of scalable and cost-effective manufacturing processes.  This aspect directly contributes to the advancement of sustainable energy technologies by providing high-performance materials with a reduced environmental footprint.\n\nAnother significant area of focus is energy storage. The group investigates the use of engineered nanoparticles and self-assembled materials for enhancing the performance of batteries and other energy storage devices. This involves studying the impact of nanoparticle size, shape, and surface chemistry on electrochemical properties such as capacity, rate capability, and cycle life.  Their methodologies range from experimental synthesis and characterization to advanced computational modeling to predict and optimize battery performance.  This research is crucial for developing next-generation energy storage systems that are more efficient, durable, and environmentally friendly.\n\nFurthermore, ANEE contributes significantly to advancing our understanding of aerosols and their impact on the environment. The group utilizes advanced metrology and modeling techniques to study the formation, evolution, and dynamics of gas-phase nanoparticles, particularly those related to pollution. This involves investigating the sources, transport, and transformation of atmospheric aerosols, and their impact on air quality and climate change. This research provides critical insights into developing effective strategies for reducing pollution and improving air quality, with applications ranging from developing more efficient emission control technologies for transportation to understanding the role of aerosols in climate change.\n\nThe group's work on catalysis explores the use of engineered nanoparticles and nanostructured materials as catalysts for various chemical reactions, particularly those relevant to energy applications. This encompasses both fundamental studies of catalytic mechanisms and the development of novel catalytic materials with enhanced activity and selectivity. The expertise in catalysis coupled with their work on nanomaterials significantly enhances the efficiency of energy conversion processes and helps to reduce environmental impact.\n\nThe ANEE group's research significantly contributes to the field through its interdisciplinary approach, state-of-the-art facilities, and collaborations with leading researchers and industry partners.  The integration of fundamental scientific research with practical applications positions the group as a key player in translating cutting-edge science into real-world solutions for a more sustainable future. Their contributions range from developing new materials and technologies to providing critical insights into complex environmental phenomena. The group\u2019s commitment to both fundamental understanding and technological innovation ensures that their research will continue to have a significant impact on the fields of energy and environmental science.\n\n\n=================================================="
   },
   {
     "id": "me-2",
@@ -1754,75 +1754,128 @@ export default function Database() {
   const [selectedMajor, setSelectedMajor] = useState<string>("All");
   const [selectedLab, setSelectedLab] = useState<Lab | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Get unique majors
   const majors = ["All", ...new Set(labs.map(lab => lab.major))];
 
-  // Filter labs by selected major
-  const filteredLabs = selectedMajor === "All" 
-    ? labs 
-    : labs.filter(lab => lab.major === selectedMajor);
+  // Filter labs by selected major and search query
+  const filteredLabs = labs.filter(lab => {
+    const matchesMajor = selectedMajor === "All" || lab.major === selectedMajor;
+    const matchesSearch = searchQuery === "" || 
+      lab.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lab.keywords.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lab.introduction.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesMajor && matchesSearch;
+  });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6">Lab Database</h1>
-      
-      {/* Major Filter */}
-      <div className="mb-6">
-        <label htmlFor="major-filter" className="block text-sm font-medium text-gray-700 mb-2">
-          Filter by Major
-        </label>
-        <select
-          id="major-filter"
-          value={selectedMajor}
-          onChange={(e) => setSelectedMajor(e.target.value)}
-          className="block w-full max-w-xs rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        >
-          {majors.map((major) => (
-            <option key={major} value={major}>
-              {major}
-            </option>
-          ))}
-        </select>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Stanford Research Labs Database</h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Explore cutting-edge research laboratories across Stanford University's engineering departments. 
+              Find labs that match your research interests and academic goals.
+            </p>
+          </div>
+
+          {/* Search and Filter Section */}
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Search Bar */}
+              <div>
+                <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+                  Search Labs
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by lab name, keywords, or research areas..."
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pl-10"
+                  />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Department Filter */}
+              <div>
+                <label htmlFor="major-filter" className="block text-sm font-medium text-gray-700 mb-2">
+                  Filter by Department
+                </label>
+                <select
+                  id="major-filter"
+                  value={selectedMajor}
+                  onChange={(e) => setSelectedMajor(e.target.value)}
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  {majors.map((major) => (
+                    <option key={major} value={major}>
+                      {major}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Results Count */}
+          <div className="mb-6">
+            <p className="text-gray-600">
+              Showing {filteredLabs.length} of {labs.length} research labs
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Labs List */}
-      <div className="space-y-6">
-        {filteredLabs.map((lab) => (
-          <div 
-            key={lab.id} 
-            className="border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-white"
-            onClick={() => {
-              setSelectedLab(lab);
-              setIsModalOpen(true);
-            }}
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-2xl font-semibold mb-2">{lab.name}</h2>
-                <p className="text-gray-600 mb-4">{lab.major}</p>
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="space-y-6">
+          {filteredLabs.map((lab) => (
+            <div 
+              key={lab.id} 
+              className="border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-white"
+              onClick={() => {
+                setSelectedLab(lab);
+                setIsModalOpen(true);
+              }}
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-2xl font-semibold mb-2">{lab.name}</h2>
+                  <p className="text-gray-600 mb-4">{lab.major}</p>
+                </div>
+                <div className="text-blue-600">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </div>
-              <div className="text-blue-600">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {lab.keywords.split(", ").map((keyword, index) => (
+                  <span
+                    key={index}
+                    className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
+                  >
+                    {keyword}
+                  </span>
+                ))}
               </div>
+              <p className="text-gray-700 line-clamp-3">
+                {lab.introduction}
+              </p>
             </div>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {lab.keywords.split(", ").map((keyword, index) => (
-                <span
-                  key={index}
-                  className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
-                >
-                  {keyword}
-                </span>
-              ))}
-            </div>
-            <p className="text-gray-700 line-clamp-3">
-              {lab.introduction}
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Modal */}

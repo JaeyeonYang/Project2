@@ -123,75 +123,128 @@ export default function Database() {
   const [selectedMajor, setSelectedMajor] = useState<string>("All");
   const [selectedLab, setSelectedLab] = useState<Lab | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Get unique majors
   const majors = ["All", ...new Set(labs.map(lab => lab.major))];
 
-  // Filter labs by selected major
-  const filteredLabs = selectedMajor === "All" 
-    ? labs 
-    : labs.filter(lab => lab.major === selectedMajor);
+  // Filter labs by selected major and search query
+  const filteredLabs = labs.filter(lab => {
+    const matchesMajor = selectedMajor === "All" || lab.major === selectedMajor;
+    const matchesSearch = searchQuery === "" || 
+      lab.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lab.keywords.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lab.introduction.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesMajor && matchesSearch;
+  });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6">Lab Database</h1>
-      
-      {/* Major Filter */}
-      <div className="mb-6">
-        <label htmlFor="major-filter" className="block text-sm font-medium text-gray-700 mb-2">
-          Filter by Major
-        </label>
-        <select
-          id="major-filter"
-          value={selectedMajor}
-          onChange={(e) => setSelectedMajor(e.target.value)}
-          className="block w-full max-w-xs rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        >
-          {majors.map((major) => (
-            <option key={major} value={major}>
-              {major}
-            </option>
-          ))}
-        </select>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Stanford Research Labs Database</h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Explore cutting-edge research laboratories across Stanford University's engineering departments. 
+              Find labs that match your research interests and academic goals.
+            </p>
+          </div>
+
+          {/* Search and Filter Section */}
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Search Bar */}
+              <div>
+                <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+                  Search Labs
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by lab name, keywords, or research areas..."
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pl-10"
+                  />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Department Filter */}
+              <div>
+                <label htmlFor="major-filter" className="block text-sm font-medium text-gray-700 mb-2">
+                  Filter by Department
+                </label>
+                <select
+                  id="major-filter"
+                  value={selectedMajor}
+                  onChange={(e) => setSelectedMajor(e.target.value)}
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  {majors.map((major) => (
+                    <option key={major} value={major}>
+                      {major}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Results Count */}
+          <div className="mb-6">
+            <p className="text-gray-600">
+              Showing {filteredLabs.length} of {labs.length} research labs
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Labs List */}
-      <div className="space-y-6">
-        {filteredLabs.map((lab) => (
-          <div 
-            key={lab.id} 
-            className="border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-white"
-            onClick={() => {
-              setSelectedLab(lab);
-              setIsModalOpen(true);
-            }}
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-2xl font-semibold mb-2">{lab.name}</h2>
-                <p className="text-gray-600 mb-4">{lab.major}</p>
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="space-y-6">
+          {filteredLabs.map((lab) => (
+            <div 
+              key={lab.id} 
+              className="border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-white"
+              onClick={() => {
+                setSelectedLab(lab);
+                setIsModalOpen(true);
+              }}
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-2xl font-semibold mb-2">{lab.name}</h2>
+                  <p className="text-gray-600 mb-4">{lab.major}</p>
+                </div>
+                <div className="text-blue-600">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </div>
-              <div className="text-blue-600">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {lab.keywords.split(", ").map((keyword, index) => (
+                  <span
+                    key={index}
+                    className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
+                  >
+                    {keyword}
+                  </span>
+                ))}
               </div>
+              <p className="text-gray-700 line-clamp-3">
+                {lab.introduction}
+              </p>
             </div>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {lab.keywords.split(", ").map((keyword, index) => (
-                <span
-                  key={index}
-                  className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
-                >
-                  {keyword}
-                </span>
-              ))}
-            </div>
-            <p className="text-gray-700 line-clamp-3">
-              {lab.introduction}
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Modal */}
