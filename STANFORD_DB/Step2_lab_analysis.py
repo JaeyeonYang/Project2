@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 import logging
 
 # Gemini API 설정
-GOOGLE_API_KEY = "AIzaSyAwPxhuFhQOfT7qHftOJmlpd4SbiPtUARY"  # 여기에 API 키를 입력하세요
+GOOGLE_API_KEY = ""  # 여기에 API 키를 입력하세요
 genai.configure(api_key=GOOGLE_API_KEY)
 
 def get_page_content(url):
