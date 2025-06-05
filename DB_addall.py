@@ -13,6 +13,10 @@ MAJOR_NAMES = {
     "me": "Mechanical Engineering",
     "bioengineering": "Bioengineering",
     "aeronautics and astronautics": "Aeronautics and Astronautics"
+    "ap" : "Applied Physics"
+    "be" : "Biomedical Engineering"
+    "ece" : "Eelctrical & Computer Engineering"
+    "ms" : "Materials Science"
 }
 
 def parse_lab_file(file_path):
