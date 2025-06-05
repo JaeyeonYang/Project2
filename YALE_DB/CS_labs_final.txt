@@ -604,3 +604,4 @@ The Lin Zhong Lab specializes in efficient computing, with a strong focus on the
 
 The lab’s methodology integrates algorithm design, hardware-software co-design, and system-level optimization to create robust and scalable computing solutions. Research areas include networking, communication systems, parallel and distributed computing, and cybersecurity, with an emphasis on developing technologies that are both high-performing and practical. The lab’s commitment to education and interdisciplinary collaboration ensures that students gain hands-on experience in cutting-edge research, preparing them to lead in the rapidly evolving landscape of computer science and engineering.
 
+
