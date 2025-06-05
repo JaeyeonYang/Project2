@@ -1,0 +1,70 @@
+Failed URLs:
+==================================================
+Lab: andersonlab.qb3.berkeley.edu
+URL: https://andersonlab.qb3.berkeley.edu/
+Reason: Failed to fetch content
+------------------------------
+Lab: clarklab.berkeley.edu
+URL: http://clarklab.berkeley.edu/
+Reason: Failed to fetch content
+------------------------------
+Lab: conboylab.berkeley.edu
+URL: https://conboylab.berkeley.edu/
+Reason: Failed to fetch content
+------------------------------
+Lab: dueberlab.berkeley.edu
+URL: https://dueberlab.berkeley.edu/
+Reason: Failed to fetch content
+------------------------------
+Lab: fletchlab.berkeley.edu
+URL: https://fletchlab.berkeley.edu/
+Reason: Failed to fetch content
+------------------------------
+Lab: leah-guthrie
+URL: https://bioeng.berkeley.edu/person/leah-guthrie
+Reason: Failed to fetch content
+------------------------------
+Lab: thglab.berkeley.edu
+URL: https://thglab.berkeley.edu/
+Reason: Failed to fetch content
+------------------------------
+Lab: kevin-healy
+URL: https://bioeng.berkeley.edu/person/kevin-healy
+Reason: Failed to fetch content
+------------------------------
+Lab: amy-e-herr
+URL: https://bioeng.berkeley.edu/person/amy-e-herr
+Reason: Failed to fetch content
+------------------------------
+Lab: ian-holmes
+URL: https://bioeng.berkeley.edu/person/ian-holmes
+Reason: Failed to fetch content
+------------------------------
+Lab: patrick-hsu
+URL: https://bioeng.berkeley.edu/person/patrick-hsu
+Reason: Failed to fetch content
+------------------------------
+Lab: sanjay-kumar
+URL: https://bioeng.berkeley.edu/person/sanjay-kumar
+Reason: Failed to fetch content
+------------------------------
+Lab: liana-lareau
+URL: https://bioeng.berkeley.edu/person/liana-lareau
+Reason: Failed to fetch content
+------------------------------
+Lab: liepmannlab.squarespace.com
+URL: https://liepmannlab.squarespace.com/
+Reason: Failed to fetch content
+------------------------------
+Lab: biomechanics.berkeley.edu
+URL: https://biomechanics.berkeley.edu/
+Reason: Failed to fetch content
+------------------------------
+Lab: murthylab.berkeley.edu
+URL: https://murthylab.berkeley.edu/
+Reason: Failed to fetch content
+------------------------------
+Lab: streetslab.com
+URL: https://streetslab.com/
+Reason: Failed to fetch content
+------------------------------
