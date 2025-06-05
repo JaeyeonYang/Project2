@@ -10,6 +10,16 @@ Current projects include electronic control of complex order parameters in corre
 
 
 ======================================================================
+Professor: Cong Su
+Keywords: Atomic engineering, quantum materials, electron beam modification, quantum materials, atomic structure modification, electron microscopy, nanotechnology, materials characterization, computational materials science, materials synthesis, surface engineering, defect engineering, quantum computing, energy materials, sustainable materials, advanced manufacturing, additive manufacturing, structural materials, alloy design, nanoscale phase transitions, quantum devices
+
+Introduction:
+The Cong Su Lab is at the forefront of atomic engineering and quantum materials research, focusing on the manipulation of atomic structures to create materials with tailored properties for next-generation technologies. The group leverages advanced electron beam modification and high-resolution electron microscopy to precisely control and characterize material structures at the nanoscale. Their research spans quantum materials, defect engineering, and surface science, with applications in quantum computing, energy storage, and sustainable materials.
+
+By integrating experimental synthesis with computational modeling, the lab enables rational design and optimization of materials for quantum devices, energy applications, and advanced manufacturing. The interdisciplinary approach includes additive manufacturing, alloy design, and the study of nanoscale phase transitions, positioning the Cong Su Lab as a leader in both fundamental discovery and the development of transformative materials for the future.
+
+
+======================================================================
 Professor: Sohrab Ismail-Beigi
 Analysis:
 Keywords: First-Principles Computation, Condensed Matter Theory, Materials Physics, Semiconductor-Oxide Interfaces, Transition Metal Oxides, Nanomaterials, Nanotubes, Nanowires, 2D Materials, Surface Chemistry, Catalysis, Electronic Structure, Mechanical Properties, Optical Properties, Photo-Induced Change, Materials Design, Quantum Materials, Exchange-Correlation Models, Defects in Solids, Computational Materials Science, Materials Discovery.
