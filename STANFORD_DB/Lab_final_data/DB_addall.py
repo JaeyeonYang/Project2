@@ -63,6 +63,7 @@ def parse_lab_file(file_path):
             "id": f"{major_short}-{len(labs) + 1}",
             "name": name,
             "major": major,  # 전체 학과명으로 저장
+            "university": "Stanford University",  # 학교 이름 추가
             "keywords": keywords,
             "introduction": introduction
         }
