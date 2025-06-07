@@ -12,11 +12,39 @@ interface ExtractionResult {
   confidence: string;
 }
 
+interface RecommendationResult {
+  success: boolean;
+  keywords: string[];
+  total_labs: number;
+  recommendations: Lab[];
+  top_n: number;
+}
+
+interface Lab {
+  id: string;
+  name: string;
+  major: string;
+  keywords: string;
+  introduction: string;
+  similarity_score: number;
+  common_keywords: string[];
+  match_count: number;
+}
+
 export default function Upload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isExtracting, setIsExtracting] = useState(false);
   const [result, setResult] = useState<ExtractionResult | null>(null);
   const [error, setError] = useState<string>("");
+  
+  // 키워드 확인/수정 단계
+  const [editableKeywords, setEditableKeywords] = useState<string[]>([]);
+  const [showKeywordEdit, setShowKeywordEdit] = useState(false);
+  const [newKeyword, setNewKeyword] = useState("");
+  
+  // 추천 결과
+  const [isRecommending, setIsRecommending] = useState(false);
+  const [recommendations, setRecommendations] = useState<RecommendationResult | null>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,10 +90,59 @@ export default function Upload() {
 
       const data: ExtractionResult = await response.json();
       setResult(data);
+      setEditableKeywords([...data.keywords]);
+      setShowKeywordEdit(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "키워드 추출 중 오류가 발생했습니다.");
     } finally {
       setIsExtracting(false);
+    }
+  };
+
+  const handleKeywordRemove = (index: number) => {
+    const updated = editableKeywords.filter((_, i) => i !== index);
+    setEditableKeywords(updated);
+  };
+
+  const handleKeywordAdd = () => {
+    if (newKeyword.trim() && !editableKeywords.includes(newKeyword.trim())) {
+      setEditableKeywords([...editableKeywords, newKeyword.trim()]);
+      setNewKeyword("");
+    }
+  };
+
+  const handleRecommendLabs = async () => {
+    if (editableKeywords.length === 0) {
+      setError("키워드를 선택해주세요.");
+      return;
+    }
+
+    setIsRecommending(true);
+    setError("");
+
+    try {
+      const response = await fetch('http://localhost:8000/recommend-labs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          keywords: editableKeywords,
+          top_n: 10
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `HTTP ${response.status}`);
+      }
+
+      const data: RecommendationResult = await response.json();
+      setRecommendations(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "추천 검색 중 오류가 발생했습니다.");
+    } finally {
+      setIsRecommending(false);
     }
   };
 
@@ -131,8 +208,8 @@ export default function Upload() {
           </div>
         )}
 
-        {/* 결과 표시 */}
-        {result && (
+        {/* 키워드 추출 결과 */}
+        {result && !showKeywordEdit && (
           <div className="w-full max-w-3xl">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="flex items-center justify-between mb-4">
@@ -184,6 +261,192 @@ export default function Upload() {
                     </span>
                   ))}
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 키워드 확인/수정 단계 */}
+        {showKeywordEdit && !recommendations && (
+          <div className="w-full max-w-3xl">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-xl font-bold mb-4">🔍 키워드 확인 및 수정</h3>
+              <p className="text-gray-600 mb-6">
+                추출된 키워드를 확인하고 수정하세요. 불필요한 키워드는 제거하고, 필요한 키워드는 추가할 수 있습니다.
+              </p>
+
+              {/* 현재 키워드들 */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-3">선택된 키워드 ({editableKeywords.length}개)</h4>
+                <div className="flex flex-wrap gap-2 mb-4 min-h-[50px] p-3 border-2 border-dashed border-gray-300 rounded-lg">
+                  {editableKeywords.length === 0 ? (
+                    <span className="text-gray-400">키워드를 추가해주세요</span>
+                  ) : (
+                    editableKeywords.map((keyword, index) => (
+                      <span 
+                        key={index}
+                        className="group px-3 py-1 bg-[#1a2233] text-[#f8f9fa] rounded-full text-sm flex items-center gap-2 hover:bg-[#223366] transition-colors"
+                      >
+                        {keyword}
+                        <button
+                          onClick={() => handleKeywordRemove(index)}
+                          className="text-red-300 hover:text-red-100 ml-1"
+                          title="키워드 제거"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* 키워드 추가 */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-3">키워드 추가</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newKeyword}
+                    onChange={(e) => setNewKeyword(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleKeywordAdd()}
+                    placeholder="새 키워드 입력..."
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1a2233] focus:border-transparent"
+                  />
+                  <button
+                    onClick={handleKeywordAdd}
+                    disabled={!newKeyword.trim()}
+                    className="px-4 py-2 bg-[#1a2233] text-white rounded-md hover:bg-[#223366] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                  >
+                    추가
+                  </button>
+                </div>
+              </div>
+
+              {/* 액션 버튼들 */}
+              <div className="flex justify-between items-center pt-4 border-t">
+                <button
+                  onClick={() => setShowKeywordEdit(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                >
+                  ← 이전 단계
+                </button>
+                <button
+                  onClick={handleRecommendLabs}
+                  disabled={editableKeywords.length === 0 || isRecommending}
+                  className={`px-6 py-2 rounded-md font-semibold transition-all ${
+                    editableKeywords.length === 0 || isRecommending
+                      ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                      : 'bg-[#1a2233] text-white hover:bg-[#223366]'
+                  }`}
+                >
+                  {isRecommending ? "검색 중..." : "연구실 추천받기 🚀"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 추천 결과 */}
+        {recommendations && (
+          <div className="w-full max-w-4xl">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold">🎯 추천 연구실</h3>
+                <div className="text-sm text-gray-600">
+                  총 {recommendations.total_labs}개 연구실 중 상위 {recommendations.recommendations.length}개
+                </div>
+              </div>
+
+              {/* 검색 키워드 */}
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-semibold mb-2">검색 키워드</h4>
+                <div className="flex flex-wrap gap-2">
+                  {recommendations.keywords.map((keyword, index) => (
+                    <span 
+                      key={index}
+                      className="px-3 py-1 bg-[#1a2233] text-white rounded-full text-sm"
+                    >
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 추천 연구실 목록 */}
+              <div className="space-y-4">
+                {recommendations.recommendations.map((lab, index) => (
+                  <div key={lab.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h4 className="text-lg font-semibold text-[#1a2233]">
+                          #{index + 1} {lab.name}
+                        </h4>
+                        <p className="text-gray-600">{lab.major}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-semibold text-[#223366]">
+                          유사도: {(lab.similarity_score * 100).toFixed(1)}%
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          공통 키워드: {lab.match_count}개
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 공통 키워드 */}
+                    {lab.common_keywords.length > 0 && (
+                      <div className="mb-3">
+                        <span className="text-sm font-medium text-gray-700">공통 키워드: </span>
+                        <div className="inline-flex flex-wrap gap-1 ml-2">
+                          {lab.common_keywords.map((keyword, kIndex) => (
+                            <span 
+                              key={kIndex}
+                              className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs"
+                            >
+                              {keyword}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 연구실 키워드 */}
+                    <div className="mb-3">
+                      <span className="text-sm font-medium text-gray-700">연구 분야: </span>
+                      <span className="text-sm text-gray-600">{lab.keywords}</span>
+                    </div>
+
+                    {/* 소개 */}
+                    <p className="text-sm text-gray-700 line-clamp-2">{lab.introduction}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* 액션 버튼들 */}
+              <div className="flex justify-between items-center mt-6 pt-4 border-t">
+                <button
+                  onClick={() => {
+                    setRecommendations(null);
+                    setShowKeywordEdit(true);
+                  }}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                >
+                  ← 키워드 수정
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setResult(null);
+                    setShowKeywordEdit(false);
+                    setRecommendations(null);
+                    setEditableKeywords([]);
+                    setError("");
+                  }}
+                  className="px-6 py-2 bg-[#1a2233] text-white rounded-md hover:bg-[#223366] transition-colors"
+                >
+                  새 CV 업로드
+                </button>
               </div>
             </div>
           </div>

@@ -50,7 +50,9 @@ npm run dev
 
 1. **PDF 업로드**: http://localhost:3000/upload 에서 CV PDF 파일 업로드
 2. **키워드 추출**: ChatGPT API 또는 폴백 모드로 자동 추출
-3. **결과 확인**: 카테고리별로 정리된 키워드 확인
+3. **키워드 확인/수정**: 추출된 키워드를 확인하고 필요시 수정
+4. **연구실 추천**: 키워드 기반으로 유사한 연구실 자동 매칭
+5. **결과 확인**: 유사도 순으로 정렬된 추천 연구실 목록 확인
 
 ## 🔧 기능
 
@@ -59,6 +61,10 @@ npm run dev
 - **ChatGPT API 키워드 추출**: 정확하고 맥락적인 키워드 추출
 - **폴백 시스템**: API 실패시 자동으로 수동 추출로 전환
 - **카테고리 분류**: 연구분야, 기술스택, 방법론, 응용분야별 분류
+- **키워드 확인/수정**: 사용자가 직접 키워드 추가/제거 가능
+- **지능형 연구실 매칭**: TF-IDF + 코사인 유사도 기반 매칭
+- **실시간 추천**: 키워드 기반 연구실 추천 및 유사도 점수 제공
+- **공통 키워드 하이라이트**: CV와 연구실 간 매칭되는 키워드 표시
 - **PDF 전용**: 오류 방지를 위해 PDF 파일만 지원
 - **파일 크기 제한**: 10MB 이하 파일만 허용
 
@@ -68,17 +74,30 @@ npm run dev
 - **Methods**: Deep Learning, CNN, Transfer Learning 등
 - **Applications**: Medical Imaging, NLP 등
 
-## 🔄 추출 방식
+## 🔄 완전한 플로우
 
-### 1차: ChatGPT API 
+### **1단계: 키워드 추출**
+
+#### 1차: ChatGPT API 
 - **장점**: 높은 정확도, 맥락 이해
 - **모델**: GPT-3.5-turbo
 - **비용**: CV 1개당 약 $0.01-0.05
 
-### 2차: 폴백 모드 (API 실패시)
+#### 2차: 폴백 모드 (API 실패시)
 - **사전 기반 매칭**: 미리 정의된 연구 키워드
 - **TF-IDF**: 통계적 중요도 기반 키워드
 - **무료**: 비용 없음
+
+### **2단계: 키워드 확인/수정**
+- **사용자 검토**: 추출된 키워드 확인
+- **편집 기능**: 키워드 추가/제거
+- **실시간 업데이트**: 즉시 반영
+
+### **3단계: 연구실 매칭**
+- **TF-IDF 벡터화**: 키워드를 수치 벡터로 변환
+- **코사인 유사도**: CV와 연구실 간 유사도 계산
+- **스마트 매칭**: 정확한 매치 + 부분 매치 조합
+- **점수 기반 랭킹**: 유사도 순으로 정렬
 
 ## 🛠️ API 엔드포인트
 
@@ -109,6 +128,42 @@ curl -X POST "http://localhost:8000/extract-keywords" \
   "confidence": "high"
 }
 ```
+
+### `POST /recommend-labs`
+키워드 기반 연구실 추천
+
+**요청**:
+```json
+{
+  "keywords": ["machine learning", "computer vision", "AI"],
+  "top_n": 10
+}
+```
+
+**응답**:
+```json
+{
+  "success": true,
+  "keywords": ["machine learning", "computer vision", "AI"],
+  "total_labs": 150,
+  "recommendations": [
+    {
+      "id": "lab-1",
+      "name": "AI Research Lab",
+      "major": "Computer Science",
+      "keywords": "artificial intelligence, machine learning, deep learning",
+      "introduction": "Leading AI research lab...",
+      "similarity_score": 0.89,
+      "common_keywords": ["machine learning", "AI"],
+      "match_count": 2
+    }
+  ],
+  "top_n": 10
+}
+```
+
+### `GET /lab/{lab_id}`
+특정 연구실 상세 정보 조회
 
 ### `GET /health`
 서버 및 API 상태 확인
@@ -159,8 +214,19 @@ Project2/
 
 ## 💡 개선 가능 사항
 
-- [ ] DOCX, TXT 파일 지원
-- [ ] 한국어 키워드 추출 강화
-- [ ] 배치 처리 기능
-- [ ] 키워드 추천 DB 연동
-- [ ] 사용자 피드백 시스템 
+### 🎯 **현재 완료된 기능**
+- [x] CV 키워드 자동 추출 (ChatGPT API + 폴백)
+- [x] 사용자 키워드 확인/수정 인터페이스
+- [x] 지능형 연구실 매칭 시스템
+- [x] 실시간 추천 및 유사도 계산
+- [x] 완전한 플로우 구현
+
+### 🚀 **향후 개선 사항**
+- [ ] DOCX, TXT 파일 지원 확장
+- [ ] 한국어 키워드 추출 고도화 (KoBERT 적용)
+- [ ] 연구실 상세 페이지 구현
+- [ ] 사용자 피드백 시스템 (추천 정확도 개선)
+- [ ] 키워드 추천 기능 (자주 사용되는 키워드 제안)
+- [ ] 배치 처리 (여러 CV 동시 처리)
+- [ ] 검색 히스토리 저장
+- [ ] 연구실 즐겨찾기 기능 

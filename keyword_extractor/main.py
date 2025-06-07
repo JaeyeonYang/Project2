@@ -5,6 +5,9 @@ import os
 import tempfile
 from pathlib import Path
 from extractor import KeywordExtractor
+from lab_matcher import LabMatcher
+from pydantic import BaseModel
+from typing import List
 import uvicorn
 
 app = FastAPI(title="CV Keyword Extractor", version="1.0.0")
@@ -22,8 +25,14 @@ app.add_middleware(
 UPLOAD_DIR = Path("uploaded_files")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
-# 키워드 추출기 초기화
+# 키워드 추출기 및 연구실 매칭기 초기화
 extractor = KeywordExtractor()
+lab_matcher = LabMatcher()
+
+# 요청 모델 정의
+class KeywordSearchRequest(BaseModel):
+    keywords: List[str]
+    top_n: int = 10
 
 @app.get("/")
 async def root():
@@ -84,12 +93,73 @@ async def extract_keywords(file: UploadFile = File(...)):
             detail=f"파일 처리 중 오류가 발생했습니다: {str(e)}"
         )
 
+@app.post("/recommend-labs")
+async def recommend_labs(request: KeywordSearchRequest):
+    """키워드 기반 연구실 추천"""
+    try:
+        if not request.keywords:
+            raise HTTPException(
+                status_code=400,
+                detail="키워드를 입력해주세요."
+            )
+        
+        print(f"🔍 키워드 검색 요청: {request.keywords}")
+        
+        # 연구실 추천
+        recommendations = lab_matcher.get_top_recommendations(
+            cv_keywords=request.keywords,
+            top_n=request.top_n
+        )
+        
+        return JSONResponse(content={
+            "success": True,
+            "keywords": request.keywords,
+            "total_labs": len(lab_matcher.labs_data),
+            "recommendations": recommendations,
+            "top_n": min(request.top_n, len(recommendations))
+        })
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"추천 처리 중 오류가 발생했습니다: {str(e)}"
+        )
+
+@app.get("/lab/{lab_id}")
+async def get_lab_detail(lab_id: str):
+    """특정 연구실 상세 정보 조회"""
+    try:
+        lab = lab_matcher.get_lab_by_id(lab_id)
+        
+        if not lab:
+            raise HTTPException(
+                status_code=404,
+                detail="연구실을 찾을 수 없습니다."
+            )
+        
+        return JSONResponse(content={
+            "success": True,
+            "lab": lab
+        })
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"연구실 정보 조회 중 오류가 발생했습니다: {str(e)}"
+        )
+
 @app.get("/health")
 async def health_check():
     return {
         "status": "healthy",
         "openai_configured": extractor.is_openai_configured(),
-        "fallback_ready": True
+        "fallback_ready": True,
+        "labs_loaded": len(lab_matcher.labs_data),
+        "matching_ready": lab_matcher.vectorizer is not None
     }
 
 if __name__ == "__main__":
