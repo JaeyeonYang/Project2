@@ -1,5 +1,6 @@
 ======================================================================  
 Professor: Eric I. Altman  
+Analysis:
 Keywords: Heterogeneous catalysis, surface chemistry, materials science, chemical engineering, environmental engineering, experimental research, theoretical modeling, novel materials, materials characterization, fuel efficiency, molecular processes, solid surfaces, catalyst design, surface modification, energy applications, sustainable materials, interdisciplinary research, reaction mechanisms, atomic-level insights, clean energy, green chemistry
 
 Introduction:  
@@ -10,6 +11,7 @@ Collaboration across applied physics, chemistry, and engineering disciplines is 
 
 ======================================================================  
 Professor: John Fortner  
+Analysis:
 Keywords: Environmental nanotechnology, water treatment, environmental remediation, nanomaterials, adsorption, catalysis, environmental engineering, chemical engineering, sustainable engineering, materials science, contaminant removal, advanced oxidation, membrane technology, water purification, environmental chemistry, surface chemistry, green technology, environmental monitoring, pollution control, resource recovery
 
 Introduction:  
@@ -20,6 +22,7 @@ Their interdisciplinary approach combines experimental and theoretical methods t
 
 ======================================================================  
 Professor: Drew R. Gentner  
+Analysis:
 Keywords: Atmospheric chemistry, air pollution, organic aerosols, environmental engineering, chemical engineering, emission sources, air quality, analytical chemistry, field measurement, mass spectrometry, environmental monitoring, organic compounds, secondary organic aerosol, indoor air quality, urban environment, source apportionment, environmental health, data analysis, sustainable cities, environmental policy
 
 Introduction:  
@@ -30,6 +33,7 @@ By integrating experimental data with environmental modeling and policy analysis
 
 ======================================================================  
 Professor: Peijun Guo  
+Analysis:
 Keywords: 2D materials, perovskites, chiral materials, photodetection, phase transition, thermal transport, circular dichroism, optical spectroscopy, pump-probe microscopy, nanomaterials, heat transfer, excitonic response, biodegradable polymers, photovoltaics, materials synthesis, ultrafast spectroscopy, electronic waste, green materials, energy devices, materials characterization
 
 Introduction:  
@@ -40,6 +44,7 @@ A significant focus is on sustainable materials innovation, such as biodegradabl
 
 ======================================================================  
 Professor: Amir Haji-Akbari  
+Analysis:
 Keywords: Thermodynamics, statistical mechanics, phase transitions, soft matter, colloidal systems, crystallization, aggregation, ice formation, atmospheric science, self-assembly, protein folding, computational modeling, kinetics, nanoporous materials, filtration, water purification, theoretical chemistry, molecular simulation, materials science, chemical engineering
 
 Introduction:  
@@ -50,6 +55,7 @@ Their research bridges fundamental theory and practical engineering, providing i
 
 ======================================================================  
 Professor: Shu Hu  
+Analysis:
 Keywords: Solar energy conversion, electrochemical cells, photocatalysis, sustainable catalysis, chemical transport, photocatalyst design, hydrogen production, CO2 reduction, water splitting, nanomaterials, light-driven chemistry, inorganic carbon utilization, materials transformation, energy storage, green chemistry, environmental remediation, nanoscale reactors, catalytic processes, renewable energy, materials engineering
 
 Introduction:  
@@ -60,6 +66,7 @@ By integrating experimental and computational approaches, the lab advances the u
 
 ======================================================================  
 Professor: Michael Loewenberg  
+Analysis:
 Keywords: Complex fluids, rheology, viscoelasticity, microstructure, emulsions, foams, polymers, colloidal suspensions, liquid crystals, microfluidics, drug delivery, protein separation, protein crystallization, enhanced oil recovery, soil remediation, red blood cell mechanics, microcirculation, coating flows, soft matter, transport phenomena
 
 Introduction:  
@@ -70,6 +77,7 @@ A key research area is the use of microfluidics for drug delivery and protein se
 
 ======================================================================  
 Professor: Jordan Peccia  
+Analysis:
 Keywords: Environmental engineering, microbiome, built environment, human health, biological aerosol detection, source tracking, sustainable biofuels, biosolids, aerosol science, human exposure assessment, environmental microbiology, biotechnology, wastewater treatment, pollution control, public health, risk assessment, data analytics, systems biology, environmental monitoring, environmental policy
 
 Introduction:  
@@ -80,6 +88,7 @@ By integrating molecular biology, data analytics, and field studies, the lab add
 
 ======================================================================  
 Professor: Lisa D. Pfefferle  
+Analysis:
 Keywords: Nanomaterials, catalysis, combustion, carbon nanotubes, environmental engineering, chemical engineering, sustainable engineering, energy systems, air pollution, nanotechnology, materials synthesis, reaction mechanisms, green chemistry, engine emissions, process engineering, fuel conversion, air quality, advanced materials, environmental chemistry, energy conversion
 
 Introduction:  
@@ -90,6 +99,7 @@ Their interdisciplinary approach combines experimental and theoretical methods t
 
 ======================================================================  
 Professor: Paul Van Tassel  
+Analysis:
 Keywords: Biomolecules, nanofilm biomaterials, macromolecular adsorption, electric potential, adsorption, templated porous materials, optical waveguide spectroscopy, molecular simulation, statistical mechanics, chemical engineering, environmental engineering, materials science, nanotechnology, interface science, biomaterials, spectroscopy, computational chemistry, surface science, polymer science, engineering education
 
 Introduction:  
@@ -100,6 +110,7 @@ By integrating materials science, nanotechnology, and computational chemistry, t
 
 ======================================================================  
 Professor: T. Kyle Vanderlick  
+Analysis:
 Keywords: Chemical engineering, environmental engineering, materials science, nanotechnology, bioengineering, sustainable engineering, data science, artificial intelligence, robotics, energy systems, computational engineering, fluid mechanics, process engineering, control systems, mechanical engineering, civil engineering, structural engineering, transportation engineering, electrical engineering, computer engineering
 
 Introduction:  
@@ -110,6 +121,7 @@ Their expertise in bioengineering and structural engineering broadens the impact
 
 ======================================================================  
 Professor: Lea R. Winter  
+Analysis:
 Keywords: Green chemistry, environmental engineering, chemical engineering, materials science, sustainable engineering, renewable energy, data science, artificial intelligence, nanotechnology, computational engineering, fluid mechanics, thermodynamics, process engineering, pollution control, water treatment, green materials, energy efficiency, environmental remediation, bioengineering, Yale University
 
 Introduction:  
@@ -120,6 +132,7 @@ The lab’s commitment to interdisciplinary research and education prepares stud
 
 ======================================================================  
 Professor: Mingjiang Zhong  
+Analysis:
 Keywords: Polymerization, radical polymerization, materials science, chemical engineering, environmental engineering, nanotechnology, sustainable engineering, bioengineering, data-driven engineering, computational engineering, energy engineering, materials discovery, innovation, breakthroughs, faculty research, Yale University, interdisciplinary research, advanced materials, green chemistry, process optimization
 
 Introduction:  
@@ -130,6 +143,7 @@ A hallmark of the lab is its commitment to interdisciplinary collaboration and d
 
 ======================================================================  
 Professor: Julie Zimmerman  
+Analysis:
 Keywords: Green chemistry, green engineering, sustainable engineering, water treatment technologies, chemical engineering, environmental engineering, product design, process design, systems design, alternative chemicals, alternative materials, policy analysis, sustainability, corporate environmental behavior, water use, nicotine, vaping products, artificial sweeteners, materials science, chemical process design
 
 Introduction:  
