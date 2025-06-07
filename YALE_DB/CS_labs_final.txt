@@ -1,5 +1,6 @@
 ======================================================================
 Professor: James Aspnes  
+Analysis:
 Keywords: Distributed algorithms, randomization, large-scale systems, peer-to-peer networks, wireless sensor networks, distributed data structures, range queries, distributed computation, resource constraints, sensor systems, security, fault-tolerance, algorithm design, data management, biology, economics, learning theory, theoretical computer science, Algorithmica, PODC
 
 Introduction:  
@@ -10,6 +11,7 @@ Security and fault-tolerance are central themes, with research dedicated to ensu
 
 ======================================================================
 Professor: Abhishek Bhattacharjee  
+Analysis:
 Keywords: Operating systems, computer architecture, memory management, virtual memory, hardware-software co-design, high-performance computing, multicore processors, cache management, OS kernels, virtualization, memory translation, page tables, heterogeneous systems, performance optimization, secure computing, resource allocation, systems software, engineering education, teaching excellence, research innovation
 
 Introduction:  
@@ -20,6 +22,7 @@ The lab’s interdisciplinary approach bridges systems software, hardware design
 
 ======================================================================
 Professor: Yang Cai  
+Analysis:
 Keywords: Algorithm design, approximation algorithms, computational complexity, combinatorial optimization, game theory, mechanism design, auction theory, matching theory, submodular optimization, linear programming, integer programming, convex optimization, high-dimensional data analysis, machine learning, theoretical computer science, cryptography, differential privacy, algorithmic fairness, computational social choice, network optimization
 
 Introduction:  
@@ -30,6 +33,7 @@ A hallmark of the lab’s approach is the integration of rigorous theoretical an
 
 ======================================================================
 Professor: Arman Cohan  
+Analysis:
 Keywords: Machine learning, natural language processing, language modeling, representation learning, information retrieval, artificial intelligence, deep learning, computational linguistics, large language models, text generation, domain adaptation, biomedical NLP, environmental technology, healthcare technology, AI applications, algorithm development, data science, software engineering, research innovation, engineering education
 
 Introduction:  
@@ -40,6 +44,7 @@ A key feature of the lab’s approach is its focus on interdisciplinary applicat
 
 ======================================================================
 Professor: Yongshan Ding  
+Analysis:
 Keywords: Quantum computing, quantum computer systems, artificial intelligence, quantum science, quantum engineering, computer science, engineering education, innovation, breakthroughs, noisy intermediate-scale quantum computers (NISQ), algorithm development, quantum algorithms, software engineering, hardware engineering, systems engineering, research methodology, quantum hardware, quantum software, quantum education, Yale University
 
 Introduction:  
@@ -50,6 +55,7 @@ A distinctive feature of the lab is its multidisciplinary approach, combining ex
 
 ======================================================================
 Professor: Julie Dorsey  
+Analysis:
 Keywords: Computer graphics, real-time rendering, photorealistic image synthesis, material modeling, texture modeling, sketch-based interfaces, lighting design, acoustical design visualization, interactive visualization, urban environments, algorithm development, computational design, architectural visualization, patina modeling, erosion modeling, image synthesis, computational geometry, high-performance computing, scientific visualization, digital art
 
 Introduction:  
@@ -60,6 +66,7 @@ A distinctive aspect of the lab’s research is its emphasis on sketch-based int
 
 ======================================================================
 Professor: Joan Feigenbaum  
+Analysis:
 Keywords: Algorithmics, massive datasets, internet algorithms, computational complexity, security, privacy, digital copyright, trust management, network algorithms, e-commerce foundations, incentive-compatible computation, game theory, microeconomics, distributed computation, multicast cost-sharing, interdomain routing, cryptology, complexity theory, randomized algorithms, network measurement
 
 Introduction:  
@@ -69,7 +76,8 @@ A significant area of the lab’s research is trust management and security in d
 
 
 ======================================================================
-Professor: Ben Fisch  
+Professor: Ben Fisch 
+Analysis:
 Keywords: Cryptography, blockchain, distributed systems, artificial intelligence, quantum computing, computer science, water technology, engineering education, innovation, breakthrough technologies, faculty research, Yale Engineering, strategic research areas, degree programs, campus culture, research disciplines, publications, Roberts Innovation Fund, technology development, AI applications, quantum information science
 
 Introduction:  
@@ -80,6 +88,7 @@ In addition to core research areas, the lab is engaged in water technology innov
 
 ======================================================================
 Professor: Michael Fischer  
+Analysis:
 Keywords: Cryptographic protocols, security, parallel and distributed systems, discrete algorithms, distributed consensus, parallel prefix algorithm, scan operation, secure e-voting, information-theoretic security, cryptosystems, trust algorithms, e-commerce security, algorithmic trust, parallel algorithms, software engineering, computer science, engineering education, algorithmic foundations, consensus protocols, secure systems, fault tolerance
 
 Introduction:  
@@ -90,6 +99,7 @@ A major area of the lab’s research is the design and analysis of secure e-voti
 
 ======================================================================
 Professor: Tesca Fitzgerald  
+Analysis:
 Keywords: Interactive robot learning, cognitive robotics, human-robot interaction, transfer learning, active learning, robot adaptation, novel object recognition, task learning, tool use, contextual understanding, robotics education, artificial intelligence, machine learning, computer science, algorithmic learning, adaptive systems, reinforcement learning, human-robot collaboration, generalization, robot perception
 
 Introduction:  
@@ -100,6 +110,7 @@ The lab’s methodology combines theoretical advances in machine learning and ar
 
 ======================================================================
 Professor: David Gelernter  
+Analysis:
 Keywords: Distributed systems, tuple spaces, Linda system, Mirror Worlds, World Wide Web, Java, Lifestreams, artificial intelligence, AI, poetry and AI, aesthetics and technology, computer communication, programming systems, software engineering, wireless technology, big data, data science, algorithmic design, network systems
 
 Introduction:  
@@ -109,7 +120,8 @@ Beyond technical innovation, the lab’s research extends to visionary concepts 
 
 
 ======================================================================
-Professor: Anurag Khandelwal  
+Professor: Anurag Khandelwal 
+Analysis:
 Keywords: Distributed systems, cloud computing, storage systems, large-scale data processing, fault tolerance, high availability, data consistency, consensus protocols, distributed databases, cloud infrastructure, scalable systems, real-time analytics, systems research, software engineering, algorithm design, machine learning, networked systems, performance optimization, computer science, systems security
 
 Introduction:  
@@ -120,6 +132,7 @@ The lab’s work bridges theoretical advances and practical system design, contr
 
 ======================================================================
 Professor: Theodore Kim  
+Analysis:
 Keywords: Computer graphics, physically-based animation, hair simulation, fluid dynamics, rendering, machine learning, deep learning, algorithm development, environmental technology, healthcare technology, software engineering, data science, robotics, biomedical engineering, computational biology, materials science, sustainable engineering, network science, cybersecurity, engineering education
 
 Introduction:  
@@ -130,6 +143,7 @@ Beyond graphics, the lab is actively engaged in advancing AI-driven solutions fo
 
 ======================================================================
 Professor: Smita Krishnaswamy  
+Analysis:
 Keywords: Deep learning, machine learning, computational biology, bioinformatics, single-cell sequencing, signal processing, representation learning, graph spectral theory, manifold learning, topology, biomedical data science, big data analysis, generative modeling, data denoising, predictive modeling, cellular signaling, systems biology, quantum materials, AI innovation, nanoscale logic circuits
 
 Introduction:  
@@ -140,6 +154,7 @@ A hallmark of the lab’s approach is its focus on practical impact and translat
 
 ======================================================================
 Professor: Alex Lew  
+Analysis:
 Keywords: Probabilistic programming, machine learning, Bayesian inference, statistical modeling, program synthesis, automated reasoning, probabilistic algorithms, deep learning, artificial intelligence, data science, uncertainty quantification, computational statistics, algorithmic fairness, software engineering, scientific computing, computer science, generative models, statistical theory, model interpretability, AI safety
 
 Introduction:  
@@ -150,6 +165,7 @@ The lab’s work has applications in scientific computing, AI safety, and algori
 
 ======================================================================
 Professor: Quanquan Liu  
+Analysis:
 Keywords: Machine learning, optimization, deep learning, statistical learning theory, algorithm design, data science, high-dimensional statistics, robust learning, non-convex optimization, reinforcement learning, neural networks, computer vision, natural language processing, computational biology, biomedical engineering, algorithmic fairness, scalable algorithms, AI safety, software engineering, engineering education
 
 Introduction:  
@@ -160,6 +176,7 @@ A key theme of the lab’s work is algorithmic fairness and AI safety, ensuring 
 
 ======================================================================
 Professor: Charalampos Papamanthou  
+Analysis:
 Keywords: Cryptography, privacy, secure computation, blockchain, data security, distributed systems, cloud computing, data structures, algorithm design, software engineering, network security, privacy-preserving algorithms, applied cryptography, verifiable computation, secure databases, information security, privacy policy, computer science, cybersecurity, engineering education
 
 Introduction:  
@@ -170,6 +187,7 @@ The lab’s work bridges theoretical cryptography and practical system implement
 
 ======================================================================
 Professor: Ruzica Piskac  
+Analysis:
 Keywords: Programming languages, software verification, automated reasoning, code synthesis, artificial intelligence, legal reasoning, formal methods, software reliability, software trustworthiness, computer science, AI in law, formal verification, code generation, program analysis, theorem proving, model checking, AI safety, algorithmic fairness, computational logic, software engineering
 
 Introduction:  
@@ -180,6 +198,7 @@ A distinctive feature of the lab’s work is its extension of formal methods int
 
 ======================================================================
 Professor: Daniel Rakita  
+Analysis:
 Keywords: Robotics, motion planning, motion optimization, shared autonomy, human-robot interaction, machine learning, robot manipulation, shared control interfaces, real-time motion planning, robot surgery, disaster relief, homecare robotics, teleoperation, space robotics, nuclear materials handling, manufacturing automation, algorithmic design, control systems, artificial intelligence, computer science
 
 Introduction:  
@@ -190,6 +209,7 @@ A key theme of the lab is human-robot collaboration, with an emphasis on designi
 
 ======================================================================
 Professor: Vladimir Rokhlin  
+Analysis:
 Keywords: Computational mathematics, randomized algorithms, numerical harmonic analysis, numerical linear algebra, special functions, fast algorithms, deterministic algorithms, scientific computing, high-performance computing, algorithm design, data science, machine learning, artificial intelligence, signal processing, image processing, engineering education, research leadership, innovation, breakthroughs, mathematical physics
 
 Introduction:  
@@ -200,6 +220,7 @@ The lab’s focus on algorithmic innovation is matched by its commitment to inte
 
 ======================================================================
 Professor: Holly Rushmeier  
+Analysis:
 Keywords: Computer graphics, 3D modeling, rendering, material appearance, digital heritage, visualization, shape analysis, light transport, image-based modeling, computer vision, machine learning, digital archiving, scientific visualization, virtual reality, computational photography, data acquisition, digital art, cultural heritage, graphics hardware, software engineering
 
 Introduction:  
@@ -210,6 +231,7 @@ The lab’s interdisciplinary approach fosters collaboration with fields such as
 
 ======================================================================
 Professor: Brian Scassellati  
+Analysis:
 Keywords: Human-robot interaction, social robotics, autism diagnosis, developmental psychology, computational modeling, embodied cognition, socially interactive robots, artificial intelligence, machine perception, social learning, humanoid robots, infant social development, social skills acquisition, robot perception, developmental disorders, social behavior modeling, early childhood development, assistive robotics, cognitive development, behavioral quantification
 
 Introduction:  
@@ -220,6 +242,7 @@ A hallmark of the lab’s approach is the use of humanoid robots equipped with a
 
 ======================================================================
 Professor: Katerina Sotiraki  
+Analysis:
 Keywords: Quantum computing, computer science, quantum algorithms, quantum information, quantum hardware, complexity theory, cryptography, theoretical computer science, algorithmic foundations, quantum circuits, quantum error correction, post-quantum security, quantum simulation, quantum communication, interdisciplinary research, engineering education, innovation, faculty leadership, awards and honors, Yale Engineering
 
 Introduction:  
@@ -230,6 +253,7 @@ A hallmark of the lab is its commitment to interdisciplinary collaboration and e
 
 ======================================================================
 Professor: Robert Soulé  
+Analysis:
 Keywords: Sustainable computing, software engineering, artificial intelligence, machine learning, data science, distributed systems, network systems, cybersecurity, control systems, robotics, materials science, nanotechnology, energy systems, environmental engineering, civil engineering, mechanical engineering, chemical engineering, electrical engineering, interdisciplinary research, Yale Engineering
 
 Introduction:  
@@ -240,6 +264,7 @@ A distinctive feature of the lab is its multidisciplinary approach, collaboratin
 
 ======================================================================
 Professor: Dan Spielman  
+Analysis:
 Keywords: Algorithm design, theoretical computer science, spectral graph theory, machine learning, data science, optimization, network science, high-performance computing, software engineering, artificial intelligence, signal processing, control systems, biomedical engineering, electrical engineering, mechanical engineering, civil engineering, materials science, sustainable engineering, engineering education, research leadership
 
 Introduction:  
@@ -250,6 +275,7 @@ A hallmark of the lab’s approach is its focus on translating theoretical advan
 
 ======================================================================
 Professor: Marynel Vázquez  
+Analysis:
 Keywords: Human-robot interaction, multi-party HRI, social robotics, robot perception, robot decision making, autonomous robots, social group phenomena, spatial behavior patterns, group social influence, graph-based reasoning, artificial intelligence, behavioral science, robotics, computer science, AI algorithms, social robot behavior, interdisciplinary research, graduate student mentorship, AI innovation, computational social science
 
 Introduction:  
@@ -260,6 +286,7 @@ A key strength of the lab is its interdisciplinary methodology, integrating comp
 
 ======================================================================
 Professor: Nisheeth Vishnoi  
+Analysis:
 Keywords: Theoretical computer science, approximability of NP-hard problems, combinatorial optimization, convex optimization, non-convex optimization, dynamical systems, stochastic processes, polynomials, algorithmic questions, natural algorithms, emergence of intelligence, AI ethics, AI society, NP-hard, approximation algorithms, optimization algorithms, computational complexity, artificial intelligence, machine learning, social impact of AI, ethical AI, data science
 
 Introduction:  
@@ -270,6 +297,7 @@ A defining feature of the lab is its commitment to the intersection of theory an
 
 ======================================================================
 Professor: Andre Wibisono  
+Analysis:
 Keywords: Algorithm design, computer science, artificial intelligence, machine learning, software engineering, data science, network systems, cybersecurity, robotics, control systems, sustainable engineering, materials science, biomedical engineering, chemical engineering, mechanical engineering, civil engineering, electrical engineering, energy systems, quantum computing, high-performance computing
 
 Introduction:  
@@ -280,6 +308,7 @@ The group’s interdisciplinary reach includes collaborations in robotics, susta
 
 ======================================================================
 Professor: Alex Wong  
+Analysis:
 Keywords: Artificial intelligence, computer science, engineering, high-impact research, innovators, breakthroughs, seed funding, workshops, degree programs, faculty research, strategic areas of impact, data science, machine learning, algorithm design, robotics, software engineering, cybersecurity, sustainable engineering, computational engineering, bioengineering
 
 Introduction:  
@@ -290,6 +319,7 @@ Workshops and collaborative initiatives foster a vibrant research environment, w
 
 ======================================================================
 Professor: Y. Richard Yang  
+Analysis:
 Keywords: Computer science, engineering education, software engineering, data science, artificial intelligence, machine learning, robotics, cybersecurity, network systems, sustainable engineering, materials science, biomedical engineering, chemical engineering, mechanical engineering, electrical engineering, civil engineering, environmental engineering, systems engineering, innovation, technological breakthroughs
 
 Introduction:  
@@ -300,6 +330,7 @@ A key aspect of the lab’s work is its interdisciplinary approach, collaboratin
 
 ======================================================================
 Professor: Rex (Zhitao) Ying  
+Analysis:
 Keywords: Artificial intelligence, machine learning, graph neural networks, deep learning, computer science, AI innovation, environmental technology, healthcare technology, algorithm design, software engineering, data science, robotics, innovation, seed funding, high-impact research, PyTorch Geometric, geometric deep learning, software libraries, workshop organization, publication
 
 Introduction:  
@@ -310,6 +341,7 @@ A hallmark of the lab is its commitment to open science and community engagement
 
 ======================================================================
 Professor: Manolis Zampetakis  
+Analysis:
 Keywords: Computer science, engineering, artificial intelligence, data science, robotics, cybersecurity, sustainable engineering, bioengineering, materials science, mechanical engineering, electrical engineering, chemical engineering, civil engineering, environmental engineering, computational engineering, quantum computing, nanotechnology, machine learning, innovation, breakthroughs
 
 Introduction:  
@@ -320,6 +352,7 @@ A hallmark of the lab is its focus on integrating computer science with other en
 
 ======================================================================
 Professor: Fan Zhang  
+Analysis:
 Keywords: Computer science, engineering, artificial intelligence, machine learning, robotics, data science, software engineering, cybersecurity, sustainable engineering, materials science, biomedical engineering, electrical engineering, mechanical engineering, civil engineering, chemical engineering, environmental engineering, faculty research, innovation, breakthroughs, strategic impact
 
 Introduction:  
@@ -330,6 +363,7 @@ A key strength of the lab is its commitment to impactful research that addresses
 
 ======================================================================
 Professor: Lin Zhong  
+Analysis:
 Keywords: Efficient computing, mobile systems, embedded systems, computer science, networking, communication systems, system design, parallel computing, distributed systems, hardware-software co-design, algorithm design, software engineering, artificial intelligence, machine learning, cybersecurity, data science, energy efficiency, mobile devices, system optimization, award-winning research
 
 Introduction:  
@@ -340,6 +374,7 @@ The lab’s methodology integrates algorithm design, hardware-software co-design
 
 ======================================================================
 Professor: Steven Zucker  
+Analysis:
 Keywords: Computational vision, biomedical engineering, computer science, machine learning, image analysis, mathematical modeling, visual perception, neural coding, pattern recognition, artificial intelligence, neuroimaging, visual cortex, visual pathways, data science, signal processing, algorithm development, interdisciplinary research, biomedical imaging, cognitive neuroscience, biomedical data science
 
 Introduction:  
