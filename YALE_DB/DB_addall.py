@@ -102,7 +102,7 @@ def main():
         return
     
     # Write to the TypeScript file
-    output_path = r'C:\Users\chany\coding\Project2\labfinder\src\app\database\page.tsx'
+    output_path = r'C:\Users\chany\coding\Project2\labfinder\src\app\database\page_copy.tsx'
     try:
         # 기존 파일 읽기
         existing_labs = []
