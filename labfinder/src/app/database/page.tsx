@@ -2972,7 +2972,7 @@ const labs: Lab[] = [
     "university": "Yale University",
     "keywords": "Quantum Materials, First-Principles Methods, Many-Electron Interactions, High-Performance Computing, Exciton Transport, Quantum Coherence, Nonlinear Optics, Ultrafast Optics, Optoelectronics, Energy Materials, Material Design, Computational Materials Science, Electron Structure, Novel Materials, Transient Materials, Materials Discovery, Quantum Information, Fundamental Processes, Materials Theory, Materials Simulation.",
     "introduction": "The Diana Qiu Lab develops and applies first-principles quantum physics methods, leveraging high-performance computing to study many-electron interactions and predict material properties with quantitative accuracy. The group is interested in the discovery and design of novel, highly tunable, and transient materials, as well as the exploration of fundamental processes such as exciton transport, coherence, and nonlinear and ultrafast optical response.\n\nResearch in the Qiu Lab targets materials relevant to optoelectronics, quantum information, and energy applications. By integrating advanced computational modeling with a focus on fundamental mechanisms, the lab provides critical insights for the design of next-generation quantum and functional materials."
-  }
+  },
 ];
 
 export default function Database() {
