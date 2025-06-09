@@ -96,7 +96,7 @@ CV 텍스트:
 
             response = await asyncio.to_thread(
                 openai.chat.completions.create,
-                model="gpt-3.5-turbo",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "당신은 연구자의 CV에서 정확한 키워드를 추출하는 전문가입니다."},
                     {"role": "user", "content": prompt}
