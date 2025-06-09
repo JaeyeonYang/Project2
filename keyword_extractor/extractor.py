@@ -1,5 +1,5 @@
 import PyPDF2
-import openai
+import google.generativeai as genai  # Gemini API 추가
 import os
 import json
 import re
@@ -15,10 +15,14 @@ load_dotenv()
 
 class KeywordExtractor:
     def __init__(self):
-        # OpenAI API 키 설정
+        # Gemini API 키 설정 (우선순위)
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
+        if self.gemini_api_key:
+            genai.configure(api_key=self.gemini_api_key)
+            self.gemini_model = genai.GenerativeModel('gemini-pro')
+        
+        # OpenAI API 키 설정 (폴백용)
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
-        if self.openai_api_key:
-            openai.api_key = self.openai_api_key
         
         # 연구 분야 키워드 사전 (폴백용)
         self.research_keywords = {
@@ -37,6 +41,10 @@ class KeywordExtractor:
             "research_methods": ["research", "experiment", "analysis", "methodology", "publication",
                                 "conference", "journal", "paper", "thesis", "dissertation"] 
         }
+    
+    def is_gemini_configured(self) -> bool:
+        """Gemini API 키가 설정되어 있는지 확인"""
+        return bool(self.gemini_api_key)
     
     def is_openai_configured(self) -> bool:
         """OpenAI API 키가 설정되어 있는지 확인"""
@@ -68,9 +76,79 @@ class KeywordExtractor:
         text = text.strip()
         return text
     
-    async def extract_with_openai(self, text: str) -> Dict:
-        """OpenAI API를 사용한 키워드 추출"""
+    async def extract_with_gemini(self, text: str) -> Dict:
+        """Gemini API를 사용한 키워드 추출"""
         try:
+            prompt = f"""
+다음은 연구자의 CV 텍스트입니다. 이 CV에서 연구 관련 키워드를 추출해서 분류해주세요.
+한국어와 영어가 혼용되어 있을 수 있습니다.
+
+CV 텍스트:
+{text[:6000]}  # Gemini는 더 많은 토큰 처리 가능
+
+다음 JSON 형태로 정확히 응답해주세요:
+{{
+    "research_fields": ["AI", "Machine Learning", "Computer Vision"],
+    "technologies": ["Python", "TensorFlow", "PyTorch"],
+    "methods": ["Deep Learning", "CNN", "Transfer Learning"], 
+    "applications": ["Medical Imaging", "Natural Language Processing"],
+    "confidence": "high"
+}}
+
+주의사항:
+- 각 카테고리당 최대 8개까지만 포함
+- 너무 일반적인 단어는 제외 (예: "computer", "software")
+- 신뢰도는 high/medium/low 중 하나
+- 정확한 JSON 형태로만 응답
+"""
+
+            if not self.gemini_api_key:
+                raise Exception("Gemini API 키가 설정되지 않았습니다.")
+
+            try:
+                # Gemini API 호출
+                response = self.gemini_model.generate_content(prompt)
+                content = response.text.strip()
+                
+            except Exception as e:
+                print(f"Gemini API 오류: {str(e)}")
+                raise Exception(f"Gemini API 호출 실패: {str(e)}")
+            
+            # JSON 파싱 시도
+            try:
+                # ```json으로 감싸진 경우 처리
+                if '```json' in content:
+                    content = content.split('```json')[1].split('```')[0].strip()
+                elif '```' in content:
+                    content = content.split('```')[1].strip()
+                
+                result = json.loads(content)
+                return {
+                    "method": "gemini",
+                    "keywords": self._flatten_keywords(result),
+                    "categories": result,
+                    "confidence": result.get("confidence", "medium")
+                }
+            except json.JSONDecodeError as e:
+                print(f"JSON 파싱 오류: {str(e)}")
+                # JSON 파싱 실패시 텍스트에서 키워드 추출 시도
+                keywords = self._extract_keywords_from_text(content)
+                return {
+                    "method": "gemini_text",
+                    "keywords": keywords,
+                    "categories": {"extracted": keywords},
+                    "confidence": "low"
+                }
+        
+        except Exception as e:
+            print(f"Gemini 키워드 추출 중 오류 발생: {str(e)}")
+            raise Exception(f"Gemini 키워드 추출 실패: {str(e)}")
+    
+    async def extract_with_openai(self, text: str) -> Dict:
+        """OpenAI API를 사용한 키워드 추출 (폴백용)"""
+        try:
+            import openai  # 필요시에만 import
+            
             prompt = f"""
 다음은 연구자의 CV 텍스트입니다. 이 CV에서 연구 관련 키워드를 추출해서 분류해주세요.
 한국어와 영어가 혼용되어 있을 수 있습니다.
@@ -97,7 +175,6 @@ CV 텍스트:
             if not self.openai_api_key:
                 raise Exception("OpenAI API 키가 설정되지 않았습니다.")
 
-            # OpenAI 클라이언트 초기화를 가장 기본적인 형태로 변경
             openai.api_key = self.openai_api_key
             
             try:
@@ -110,15 +187,9 @@ CV 텍스트:
                     temperature=0.3,
                     max_tokens=800
                 )
-            except openai.APIError as e:
-                print(f"OpenAI API 오류: {str(e)}")
-                raise Exception(f"OpenAI API 호출 실패 (API 오류): {str(e)}")
-            except openai.RateLimitError as e:
-                print(f"OpenAI API 속도 제한: {str(e)}")
-                raise Exception(f"OpenAI API 호출 실패 (속도 제한): {str(e)}")
             except Exception as e:
-                print(f"OpenAI API 예상치 못한 오류: {str(e)}")
-                raise Exception(f"OpenAI API 호출 실패 (예상치 못한 오류): {str(e)}")
+                print(f"OpenAI API 오류: {str(e)}")
+                raise Exception(f"OpenAI API 호출 실패: {str(e)}")
             
             content = response.choices[0].message.content.strip()
             
@@ -133,7 +204,6 @@ CV 텍스트:
                 }
             except json.JSONDecodeError as e:
                 print(f"JSON 파싱 오류: {str(e)}")
-                # JSON 파싱 실패시 텍스트에서 키워드 추출 시도
                 keywords = self._extract_keywords_from_text(content)
                 return {
                     "method": "openai_text",
@@ -143,8 +213,8 @@ CV 텍스트:
                 }
         
         except Exception as e:
-            print(f"키워드 추출 중 오류 발생: {str(e)}")
-            raise Exception(f"키워드 추출 실패: {str(e)}")
+            print(f"OpenAI 키워드 추출 중 오류 발생: {str(e)}")
+            raise Exception(f"OpenAI 키워드 추출 실패: {str(e)}")
     
     def extract_with_fallback(self, text: str) -> Dict:
         """폴백 방식: 수동 키워드 추출"""
@@ -236,7 +306,7 @@ CV 텍스트:
         return [word for word, count in word_counts.most_common(15)]
     
     async def extract_keywords(self, pdf_path: str) -> Dict:
-        """메인 키워드 추출 함수"""
+        """메인 키워드 추출 함수 - Gemini 우선"""
         print(f"📄 PDF 파일 처리 시작: {pdf_path}")
         
         # 1. PDF에서 텍스트 추출
@@ -248,7 +318,19 @@ CV 텍스트:
         
         print(f"📝 텍스트 추출 완료: {len(cleaned_text)} 글자")
         
-        # 2. OpenAI API 시도
+        # 2. Gemini API 시도 (우선순위)
+        if self.is_gemini_configured():
+            try:
+                print("🤖 Gemini API로 키워드 추출 시도...")
+                result = await self.extract_with_gemini(cleaned_text)
+                print(f"✅ Gemini 추출 성공: {len(result['keywords'])}개 키워드")
+                return result
+            
+            except Exception as e:
+                print(f"❌ Gemini API 실패: {str(e)}")
+                print("🔄 OpenAI로 폴백 시도...")
+        
+        # 3. OpenAI API 시도 (폴백)
         if self.is_openai_configured():
             try:
                 print("🤖 OpenAI API로 키워드 추출 시도...")
@@ -258,9 +340,9 @@ CV 텍스트:
             
             except Exception as e:
                 print(f"❌ OpenAI API 실패: {str(e)}")
-                print("🔄 폴백 모드로 전환...")
+                print("🔄 수동 추출 모드로 전환...")
         
-        # 3. 폴백 방식 실행
+        # 4. 수동 추출 방식 실행
         result = self.extract_with_fallback(cleaned_text)
-        print(f"✅ 폴백 추출 완료: {len(result['keywords'])}개 키워드")
+        print(f"✅ 수동 추출 완료: {len(result['keywords'])}개 키워드")
         return result 
