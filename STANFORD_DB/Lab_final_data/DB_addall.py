@@ -147,6 +147,7 @@ interface Lab {
   id: string;
   name: string;
   major: string;
+  university: string;
   keywords: string;
   introduction: string;
 }
