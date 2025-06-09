@@ -35,7 +35,7 @@ class KeywordExtractor:
             "programming": ["python", "java", "c++", "javascript", "tensorflow", "pytorch", 
                            "scikit-learn", "keras", "react", "node.js", "git", "docker"],
             "research_methods": ["research", "experiment", "analysis", "methodology", "publication",
-                                "conference", "journal", "paper", "thesis", "dissertation"]
+                                "conference", "journal", "paper", "thesis", "dissertation"] 
         }
     
     def is_openai_configured(self) -> bool:
@@ -94,16 +94,31 @@ CV 텍스트:
 - 정확한 JSON 형태로만 응답
 """
 
-            response = await asyncio.to_thread(
-                openai.chat.completions.create,
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": "당신은 연구자의 CV에서 정확한 키워드를 추출하는 전문가입니다."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.3,
-                max_tokens=800
-            )
+            if not self.openai_api_key:
+                raise Exception("OpenAI API 키가 설정되지 않았습니다.")
+
+            # OpenAI 클라이언트 초기화를 가장 기본적인 형태로 변경
+            openai.api_key = self.openai_api_key
+            
+            try:
+                response = await openai.ChatCompletion.acreate(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": "당신은 연구자의 CV에서 정확한 키워드를 추출하는 전문가입니다."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.3,
+                    max_tokens=800
+                )
+            except openai.APIError as e:
+                print(f"OpenAI API 오류: {str(e)}")
+                raise Exception(f"OpenAI API 호출 실패 (API 오류): {str(e)}")
+            except openai.RateLimitError as e:
+                print(f"OpenAI API 속도 제한: {str(e)}")
+                raise Exception(f"OpenAI API 호출 실패 (속도 제한): {str(e)}")
+            except Exception as e:
+                print(f"OpenAI API 예상치 못한 오류: {str(e)}")
+                raise Exception(f"OpenAI API 호출 실패 (예상치 못한 오류): {str(e)}")
             
             content = response.choices[0].message.content.strip()
             
@@ -116,7 +131,8 @@ CV 텍스트:
                     "categories": result,
                     "confidence": result.get("confidence", "medium")
                 }
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as e:
+                print(f"JSON 파싱 오류: {str(e)}")
                 # JSON 파싱 실패시 텍스트에서 키워드 추출 시도
                 keywords = self._extract_keywords_from_text(content)
                 return {
@@ -127,8 +143,8 @@ CV 텍스트:
                 }
         
         except Exception as e:
-            print(f"OpenAI API 오류: {str(e)}")
-            raise Exception(f"OpenAI API 호출 실패: {str(e)}")
+            print(f"키워드 추출 중 오류 발생: {str(e)}")
+            raise Exception(f"키워드 추출 실패: {str(e)}")
     
     def extract_with_fallback(self, text: str) -> Dict:
         """폴백 방식: 수동 키워드 추출"""
