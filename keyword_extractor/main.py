@@ -158,7 +158,7 @@ async def health_check():
         "status": "healthy",
         "gemini_configured": extractor.is_configured(),
         "labs_loaded": len(lab_matcher.labs_data),
-        "matching_ready": lab_matcher.vectorizer is not None
+        "matching_ready": lab_matcher.lab_embeddings is not None
     }
 
 if __name__ == "__main__":
