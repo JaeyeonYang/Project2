@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { labs } from "@/app/database/labsData";
-import { LabMatcher } from "@/app/utils/lab_matcher";
 import { useRouter } from "next/navigation";
 
 interface Lab {
@@ -24,25 +22,46 @@ export default function Recommend() {
   const router = useRouter();
 
   useEffect(() => {
-    // 세션 스토리지에서 키워드 가져오기
-    const storedKeywords = sessionStorage.getItem("cvKeywords");
-    
-    if (!storedKeywords) {
-      // 키워드가 없으면 업로드 페이지로 리다이렉트
-      router.push("/upload");
-      return;
-    }
+    const fetchRecommendations = async () => {
+      const storedKeywords = sessionStorage.getItem("cvKeywords");
+      
+      if (!storedKeywords) {
+        router.push("/upload");
+        return;
+      }
 
-    try {
-      const cvKeywords = JSON.parse(storedKeywords);
-      const matcher = new LabMatcher();
-      const recommendations = matcher.get_top_recommendations(cvKeywords);
-      setRecommendedLabs(recommendations);
-    } catch (error) {
-      console.error("Error getting recommendations:", error);
-    } finally {
-      setIsLoading(false);
-    }
+      try {
+        const cvKeywords = JSON.parse(storedKeywords);
+        
+        const response = await fetch("http://localhost:8000/recommend-labs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            keywords: cvKeywords,
+            top_n: 10, // 필요에 따라 이 값을 조정할 수 있습니다.
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("추천 목록을 불러오는데 실패했습니다.");
+        }
+
+        const data = await response.json();
+        if (data.success) {
+          setRecommendedLabs(data.recommendations);
+        } else {
+          throw new Error("API에서 오류를 반환했습니다.");
+        }
+      } catch (error) {
+        console.error("추천을 받아오는 중 오류 발생:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRecommendations();
   }, [router]);
 
   if (isLoading) {
