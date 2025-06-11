@@ -10,18 +10,9 @@ logging.basicConfig(
 
 # Major name mapping dictionary
 MAJOR_NAMES = {
-    "cheme": "Chemical Engineering",
-    "cee": "Civil and Environmental Engineering",
-    "icme": "Institute for Computational & Mathematical Engineering",
-    "cs": "Computer Science",
-    "ee": "Electrical Engineering",
-    "msande": "Management Science and Engineering",
-    "mse": "Materials Science and Engineering",
-    "me": "Mechanical Engineering",
-    "bioengineering": "Bioengineering",
-    "aa": "Aeronautics and Astronautics",
-    "Biology_and_biological_engineering":"Biology_and_biological_engineering",
-    "Chemistry_and_Chemical_engineering":"Chemistry_and_Chemical_engineering"
+    "Biology_and_biological_engineering": "Biology_and_biological_engineering",
+    "Chemistry_and_Chemical_engineering": "Chemistry_and_Chemical_engineering",
+    "Engineering_and_applied_science": "Engineering_and_applied_science"
 }
 
 def parse_lab_file(file_path):
@@ -97,7 +88,10 @@ def read_existing_labs(file_path):
                 end_idx = content.find(end_marker, start_idx)
                 if end_idx != -1:
                     existing_json = content[start_idx:end_idx]
-                    return json.loads(existing_json)
+                    existing_labs = json.loads(existing_json)
+                    # Caltech 데이터 제거
+                    existing_labs = [lab for lab in existing_labs if lab['university'] != 'Caltech']
+                    return existing_labs
     except Exception as e:
         logging.warning(f"Error reading existing labs file: {str(e)}")
     return []
@@ -128,7 +122,7 @@ def main():
         logging.info(f"New labs found: {len(all_labs)}")
         
         # Read existing labs
-        output_path = r"C:\data structure inclass\Groupassignment\Project2\labfinder\src\app\database\labsData copy.ts"
+        output_path = r"C:\Users\kimji\OneDrive\바탕 화면\ai_project2\Project2\labfinder\src\app\database\labsData.ts"
         existing_labs = read_existing_labs(output_path)
         logging.info(f"Existing labs: {len(existing_labs)}")
         

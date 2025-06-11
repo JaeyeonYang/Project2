@@ -111,8 +111,8 @@ def main():
         with open(output_path, 'r', encoding='utf-8') as f:
             content = f.read()
             
-        # labs 배열의 끝을 찾기 (마지막 객체의 닫는 괄호 직전)
-        end_marker = '  }\n]'
+        # labs 배열의 끝을 찾기
+        end_marker = '];'
         end_idx = content.rfind(end_marker)
         
         if end_idx == -1:

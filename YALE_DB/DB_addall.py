@@ -79,24 +79,6 @@ def parse_lab_file(file_path):
         logging.error(f"Error reading file {file_path}: {str(e)}")
         return []
 
-def read_existing_labs(file_path):
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-            # 기존 labs 배열 추출
-            start_marker = 'export const labs: Lab[] = '
-            end_marker = '];'
-            start_idx = content.find(start_marker)
-            if start_idx != -1:
-                start_idx += len(start_marker)
-                end_idx = content.find(end_marker, start_idx)
-                if end_idx != -1:
-                    existing_json = content[start_idx:end_idx]
-                    return json.loads(existing_json)
-    except Exception as e:
-        logging.warning(f"Error reading existing labs file: {str(e)}")
-    return []
-
 def main():
     try:
         # Directory containing the txt files
@@ -122,50 +104,46 @@ def main():
         
         logging.info(f"New labs found: {len(all_labs)}")
         
-        # Read existing labs
+        # Write to the TypeScript file (APPENDING LOGIC)
         output_path = r"C:\Users\kimji\OneDrive\바탕 화면\ai_project2\Project2\labfinder\src\app\database\labsData.ts"
-        existing_labs = read_existing_labs(output_path)
-        logging.info(f"Existing labs: {len(existing_labs)}")
-        
-        # Combine existing and new labs
-        combined_labs = existing_labs + all_labs
-        
-        # Remove duplicates based on id
-        seen_ids = set()
-        unique_labs = []
-        for lab in combined_labs:
-            if lab['id'] not in seen_ids:
-                seen_ids.add(lab['id'])
-                unique_labs.append(lab)
-        
-        logging.info(f"Total labs after combining and removing duplicates: {len(unique_labs)}")
-        logging.info(f"New labs added: {len(unique_labs) - len(existing_labs)}")
-        
-        # Convert to JSON
-        json_data = json.dumps(unique_labs, indent=2, ensure_ascii=False)
-        
-        # TypeScript 파일 내용 생성
-        ts_content = """'use client';
+        try:
+            # 기존 파일 읽기
+            with open(output_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                
+            # 줄바꿈 문자 통일 (CRLF -> LF)
+            content = content.replace('\r\n', '\n')
+                
+            # labs 배열의 끝을 찾기 (`];` 패턴)
+            end_marker = '];'
+            end_idx = content.rfind(end_marker)
 
-interface Lab {
-  id: string;
-  name: string;
-  major: string;
-  university: string;
-  keywords: string;
-  introduction: string;
-}
+            if end_idx == -1:
+                logging.error("Error: Could not find the end of labs array in existing file. Make sure it ends with '];'")
+                return
 
-export const labs: Lab[] = """ + json_data + """;
+            # 새로운 labs 데이터를 JSON 문자열로 변환하고 대괄호 제거
+            new_labs_json_part = json.dumps(all_labs, indent=2, ensure_ascii=False)[1:-1]
 
-export default labs;"""
-        
-        # 파일 쓰기
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(ts_content)
-        
-        logging.info(f"Successfully wrote {len(ts_content)} bytes to {output_path}")
-        
+            # 기존 배열이 비어있는지 확인 (`];` 바로 앞에 `[`가 있는지)
+            # 즉, 'export const labs: Lab[] = [];' 인 경우
+            if content[end_idx - 1].strip() == '[':
+                # 배열이 비어있으면 쉼표 없이 추가 (예: [] -> [new_data])
+                final_content = content[:end_idx] + new_labs_json_part + content[end_idx:]
+            else:
+                # 배열이 비어있지 않으면 쉼표 추가 후 추가 (예: [existing] -> [existing, new_data])
+                # 기존 마지막 객체와 새 데이터 사이에 쉼표와 줄바꿈 추가
+                final_content = content[:end_idx] + ',\n' + new_labs_json_part + content[end_idx:]
+
+            # 파일 쓰기
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(final_content)
+
+            logging.info(f"\nSuccessfully added {len(all_labs)} labs to {output_path}")
+
+        except Exception as e:
+            logging.error(f"Error writing to file: {e}")
+
     except Exception as e:
         logging.error(f"Error in main process: {str(e)}")
 
