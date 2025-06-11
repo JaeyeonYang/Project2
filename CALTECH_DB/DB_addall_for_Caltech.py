@@ -128,7 +128,7 @@ def main():
         logging.info(f"New labs found: {len(all_labs)}")
         
         # Read existing labs
-        output_path = "/Users/jaeyeonyang/Dropbox/학교/강의/EF/AI programming/Project2/labfinder/src/app/database/labsData.ts"
+        output_path = r"C:\data structure inclass\Groupassignment\Project2\labfinder\src\app\database\labsData copy.ts"
         existing_labs = read_existing_labs(output_path)
         logging.info(f"Existing labs: {len(existing_labs)}")
         
