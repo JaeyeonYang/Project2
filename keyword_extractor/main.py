@@ -143,6 +143,20 @@ async def recommend_labs(request: KeywordSearchRequest):
             detail=f"추천 처리 중 오류가 발생했습니다: {str(e)}"
         )
 
+@app.get("/all-labs")
+async def get_all_labs():
+    """모든 연구실 목록 조회"""
+    try:
+        return JSONResponse(content={
+            "success": True,
+            "labs": lab_matcher.labs_data
+        })
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"전체 연구실 목록을 가져오는 중 오류가 발생했습니다: {str(e)}"
+        )
+
 @app.get("/lab-by-slug/{slug}")
 async def get_lab_by_slug(slug: str):
     """슬러그 기반으로 연구실 상세 정보 조회"""

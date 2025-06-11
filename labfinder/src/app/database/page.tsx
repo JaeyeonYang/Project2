@@ -1,10 +1,10 @@
 'use client';
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiSearch, FiFilter, FiChevronDown, FiChevronUp, FiExternalLink } from "react-icons/fi";
-import { labs } from "./labsData";
+import { FiSearch, FiFilter, FiChevronDown, FiChevronUp, FiExternalLink, FiLoader } from "react-icons/fi";
+import { slugify } from "@/app/utils/slugify";
 import { useRouter } from "next/navigation";
 
 // Lab 타입 정의
@@ -18,6 +18,10 @@ type Lab = {
 };
 
 export default function Database() {
+  const [allLabs, setAllLabs] = useState<Lab[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [expandedLab, setExpandedLab] = useState<string | null>(null);
   const [selectedUniversity, setSelectedUniversity] = useState<string>("All");
   const [selectedMajor, setSelectedMajor] = useState<string>("All");
@@ -25,23 +29,46 @@ export default function Database() {
   const [showFilters, setShowFilters] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    const fetchLabs = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/all-labs");
+        if (!response.ok) {
+          throw new Error("Failed to fetch lab data");
+        }
+        const data = await response.json();
+        if (data.success) {
+          setAllLabs(data.labs);
+        } else {
+          throw new Error("API did not return a successful response.");
+        }
+      } catch (err: any) {
+        setError(err.message);
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchLabs();
+  }, []);
+
   // 중복 없는 대학교 목록 만들기
   const universities = useMemo(() => 
-    ["All", ...Array.from(new Set(labs.map(lab => lab.university)))],
-    []
+    ["All", ...Array.from(new Set(allLabs.map(lab => lab.university)))],
+    [allLabs]
   );
   
   // 선택된 대학에 따른 학과 목록 필터링
   const majors = useMemo(() => {
     if (selectedUniversity === "All") {
-      return ["All", ...Array.from(new Set(labs.map(lab => lab.major)))];
+      return ["All", ...Array.from(new Set(allLabs.map(lab => lab.major)))];
     }
     return ["All", ...Array.from(new Set(
-      labs
+      allLabs
         .filter(lab => lab.university === selectedUniversity)
         .map(lab => lab.major)
     ))];
-  }, [selectedUniversity]);
+  }, [selectedUniversity, allLabs]);
 
   // 대학이 변경될 때 학과 필터 초기화
   const handleUniversityChange = (university: string) => {
@@ -51,7 +78,8 @@ export default function Database() {
 
   // 검색어, 대학교, 학과별 필터링된 랩 목록
   const filteredLabs = useMemo(() => {
-    return labs.filter(lab => {
+    if (isLoading) return [];
+    return allLabs.filter(lab => {
       const universityMatch = selectedUniversity === "All" || lab.university === selectedUniversity;
       const majorMatch = selectedMajor === "All" || lab.major === selectedMajor;
       const searchMatch = searchQuery === "" || 
@@ -61,7 +89,33 @@ export default function Database() {
       
       return universityMatch && majorMatch && searchMatch;
     });
-  }, [selectedUniversity, selectedMajor, searchQuery]);
+  }, [selectedUniversity, selectedMajor, searchQuery, allLabs, isLoading]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <FiLoader className="animate-spin text-4xl text-blue-600 mx-auto mb-4" />
+          <h1 className="text-xl font-semibold text-gray-800">Loading Lab Database...</h1>
+          <p className="text-gray-500 mt-2">Please make sure the Python API server is running.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-center px-4">
+        <div>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Failed to Load Data</h1>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <p className="text-gray-500">
+            Please ensure the backend server is running at <code className="bg-gray-200 p-1 rounded">http://localhost:8000</code> and try again.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -182,16 +236,16 @@ export default function Database() {
                   {/* Lab Header */}
                   <div 
                     className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
-              onClick={() => setExpandedLab(expandedLab === lab.id ? null : lab.id)}
-            >
+                    onClick={() => setExpandedLab(expandedLab === lab.id ? null : lab.id)}
+                  >
                     <div className="flex justify-between items-start">
-              <div>
+                      <div>
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">{lab.name}</h2>
                         <div className="flex items-center text-gray-600 mb-3">
                           <span className="font-medium">{lab.university}</span>
                           <span className="mx-2">•</span>
                           <span>{lab.major}</span>
-              </div>
+                        </div>
                         <div className="flex flex-wrap gap-2">
                           {lab.keywords.split(", ").slice(0, 3).map((keyword, index) => (
                             <span
@@ -211,12 +265,12 @@ export default function Database() {
                       <div className="text-gray-400">
                         {expandedLab === lab.id ? <FiChevronUp size={24} /> : <FiChevronDown size={24} />}
                       </div>
-              </div>
-            </div>
+                    </div>
+                  </div>
 
                   {/* Lab Details */}
                   <AnimatePresence>
-            {expandedLab === lab.id && (
+                    {expandedLab === lab.id && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
@@ -227,30 +281,30 @@ export default function Database() {
                         <div className="p-6">
                           <div className="mb-6">
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">Research Keywords</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {lab.keywords.split(", ").map((keyword, index) => (
-                      <span
-                        key={index}
+                            <div className="flex flex-wrap gap-2">
+                              {lab.keywords.split(", ").map((keyword, index) => (
+                                <span
+                                  key={index}
                                   className="bg-blue-50 text-blue-700 text-sm px-3 py-1 rounded-full"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                                >
+                                  {keyword}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
                           <div className="mb-6">
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">Introduction</h3>
                             <p className="text-gray-700 whitespace-pre-line leading-relaxed">
                               {lab.introduction}
                             </p>
-                </div>
+                          </div>
                           <Link
-                            href={`/lab/${lab.id}`}
+                            href={`/lab/${slugify(lab.name)}`}
                             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                           >
-                    View Full Details
-                </Link>
-              </div>
+                            View Full Details
+                          </Link>
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
