@@ -121,7 +121,7 @@ export default function Database() {
                   <h3 className="text-sm font-semibold text-gray-500 mb-2">Introduction</h3>
                   <p className="text-gray-700 whitespace-pre-line">{lab.introduction}</p>
                 </div>
-                <Link href={`/lab/${lab.id}`}>
+                <Link href={`/lab/${lab.id}`} className="inline-block">
                   <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                     View Full Details
                   </button>

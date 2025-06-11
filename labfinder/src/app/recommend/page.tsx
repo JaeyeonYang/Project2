@@ -45,28 +45,38 @@ const labs = [
 
 export default function Recommend() {
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center bg-[#f8f9fa] text-[#1a2233]">
-      <main className="flex flex-col items-center gap-8 p-8 w-full max-w-2xl">
-        <h2 className="text-2xl font-bold mb-2">연구실 추천 결과</h2>
-        <div className="grid gap-6 w-full">
-          {labs.map((lab) => (
-            <div key={lab.id} className="bg-white rounded-xl shadow p-6 flex flex-col sm:flex-row sm:items-center justify-between">
-              <div>
-                <div className="text-lg font-semibold">{lab.name}</div>
-                <div className="text-sm text-[#888]">{lab.school}</div>
-                <div className="text-sm text-[#666] mt-1">{lab.keywords}</div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Recommended Labs</h1>
+      
+      <div className="w-full space-y-4">
+        {labs.map((lab) => (
+          <div key={lab.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="p-4 cursor-pointer hover:bg-gray-50 flex justify-between items-center">
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold">{lab.name}</h2>
+                <p className="text-gray-600">{lab.school}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {lab.keywords.split(", ").slice(0, 3).map((keyword, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full"
+                    >
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="flex items-center gap-4 mt-2 sm:mt-0">
-                <span className="text-base font-bold text-[#223366]">유사도: {(lab.score * 100).toFixed(1)}%</span>
-                <Link href={`/lab/${lab.id}`} className="underline text-[#1a2233]">상세보기</Link>
+              <div className="ml-4">
+                <Link href={`/lab/${lab.id}`}>
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    View Details
+                  </button>
+                </Link>
               </div>
             </div>
-          ))}
-        </div>
-        <Link href="/upload">
-          <button className="mt-8 underline text-[#1a2233]">CV 다시 업로드</button>
-        </Link>
-      </main>
+          </div>
+        ))}
+      </div>
     </div>
   );
 } 
