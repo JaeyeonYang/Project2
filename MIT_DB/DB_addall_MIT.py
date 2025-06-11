@@ -97,13 +97,31 @@ def main():
         print(f"First lab: {all_labs[0]}")
         print(f"Last lab: {all_labs[-1]}")
     
-    # Save as JSON file
-    output_path = os.path.join(data_dir, 'mit_labs.json')
+    # Write to the TypeScript file
+    output_path = r'C:\Users\kimji\OneDrive\바탕 화면\ai_project2\Project2\labfinder\src\app\database\labsData.ts'
     try:
+        # 기존 파일 읽기
+        with open(output_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        # labs 배열의 끝을 찾기 (마지막 객체의 닫는 괄호 직전)
+        end_marker = '  }\n]'
+        end_idx = content.rfind(end_marker)
+        
+        if end_idx == -1:
+            print("Error: Could not find the end of labs array")
+            return
+            
+        # 새로운 labs 데이터를 기존 배열에 추가
+        # 마지막 객체 뒤에 쉼표 추가하고 새로운 데이터 삽입
+        new_content = content[:end_idx] + ',\n' + json.dumps(all_labs, indent=2, ensure_ascii=False)[1:-1] + content[end_idx:]
+        
+        # 파일 쓰기
         with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(all_labs, f, indent=2, ensure_ascii=False)
-        print(f"\nSuccessfully wrote to {output_path}")
-        print(f"Total labs: {len(all_labs)}")
+            f.write(new_content)
+        
+        print(f"\nSuccessfully added {len(all_labs)} labs to {output_path}")
+        
     except Exception as e:
         print(f"Error writing to file: {e}")
     
