@@ -17,7 +17,7 @@ class KeywordExtractor:
             raise Exception("GEMINI_API_KEY가 설정되지 않았습니다.")
         
         genai.configure(api_key=self.gemini_api_key)
-        self.gemini_model = genai.GenerativeModel('gemini-pro')
+        self.gemini_model = genai.GenerativeModel('gemini-2.0-flash')
     
     def is_configured(self) -> bool:
         """Gemini API 키가 설정되어 있는지 확인"""
