@@ -1,11 +1,12 @@
 'use client';
-
 import { labs } from "../../database/labsData";
+import { slugify } from "@/app/utils/slugify";
 import { useParams } from "next/navigation";
 
 export default function LabDetailPage() {
-  const params = useParams();
-  const labId = params.id as string;
+  const { slug } = useParams();
+  const lab = labs.find(l => slugify(l.name) === slug);
+
   
   console.log('Current labId:', labId);
   console.log('Available labs:', labs.map(l => l.id));

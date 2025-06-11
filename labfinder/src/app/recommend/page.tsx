@@ -1,4 +1,5 @@
 "use client";
+import { slugify } from "@/app/utils/slugify";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -129,7 +130,7 @@ export default function Recommend() {
                   )}
                 </div>
                 <div className="ml-4">
-                  <Link href={`/lab/${lab.id}`} className="inline-block">
+                  <Link href={`/lab/${slugify(lab.name)}`} className="inline-block">
                     <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                       View Details
                     </button>
