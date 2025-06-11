@@ -28,6 +28,8 @@ def parse_lab_file(file_path):
         major_short = os.path.basename(file_path).replace('.txt', '').lower()
         # 전체 학과명으로 매핑
         major = MAJOR_NAMES.get(major_short, major_short.title())
+        # 언더바를 공백으로 변환
+        major = major.replace('_', ' ')
         
         logging.info(f"Processing {file_path}")
         logging.info(f"Found {len(lab_entries)} lab entries")
@@ -109,24 +111,40 @@ def main():
                 
             # 줄바꿈 문자 통일 (CRLF -> LF)
             content = content.replace('\r\n', '\n')
-                
-            # labs 배열의 끝을 찾기 (마지막 객체의 닫는 괄호 직전)
-            # MIT 스크립트와 동일한 end_marker 사용
-            end_marker = '  }\n]'
-            end_idx = content.rfind(end_marker)
+            
+            # labs 배열의 끝을 찾기 (`];` 패턴)
+            # 이 `];`는 파일의 가장 마지막에 있는 `];`여야 합니다.
+            # `export default labs;` 바로 앞에 있는 `];`
+            end_array_marker_pos = content.rfind('];')
 
-            if end_idx == -1:
-                logging.error("Error: Could not find the end of labs array in existing file. Make sure it ends with '  }\\n]'")
+            if end_array_marker_pos == -1:
+                logging.error("Error: Could not find the end of labs array ('];') in existing file.")
                 return
 
-            # 새로운 labs 데이터를 기존 배열에 추가
-            # 마지막 객체 뒤에 쉼표 추가하고 새로운 데이터 삽입
-            # [1:-1]로 대괄호 제거!
-            new_content = content[:end_idx] + ',\n' + json.dumps(all_labs, indent=2, ensure_ascii=False)[1:-1] + content[end_idx:]
+            # `];`까지의 내용을 prefix로 가져오고, 그 이후를 suffix로 가져옵니다.
+            prefix = content[:end_array_marker_pos]
+            suffix = content[end_array_marker_pos:] # This will be '];\n\nexport default labs;'
+
+            # 새로운 labs 데이터를 JSON 문자열로 변환하고 대괄호 제거
+            new_labs_json_part = json.dumps(all_labs, indent=2, ensure_ascii=False)[1:-1]
+
+            # prefix의 마지막 문자(공백 제거 후)가 '['인지 확인하여 배열이 비어있는지 판단
+            # 예를 들어, 'export const labs: Lab[] = [' 에서 '['가 마지막
+            # 또는 '  {\n    ...\n  }\n' 에서 '}'가 마지막
+            last_char_before_bracket = prefix.strip()[-1] if prefix.strip() else ''
+
+            if last_char_before_bracket == '[':
+                # 배열이 비어있으면 (예: `[...]` 안에 아무것도 없을 때) 쉼표 없이 추가
+                # 최종적으로 `export const labs: Lab[] = [new_data];` 형태가 되도록
+                final_content = prefix + new_labs_json_part + suffix
+            else:
+                # 배열이 비어있지 않으면 쉼표 추가 후 추가
+                # 최종적으로 `..., existing_data,\nnew_data];` 형태가 되도록
+                final_content = prefix + ',\n' + new_labs_json_part + suffix
 
             # 파일 쓰기
             with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(new_content)
+                f.write(final_content)
 
             logging.info(f"\nSuccessfully added {len(all_labs)} labs to {output_path}")
 
