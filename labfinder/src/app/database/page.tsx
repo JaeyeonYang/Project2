@@ -21,7 +21,18 @@ export default function Database() {
 
   // 중복 없는 대학교와 학과 목록 만들기
   const universities = ["All", ...Array.from(new Set(labs.map(lab => lab.university)))];
-  const majors = ["All", ...Array.from(new Set(labs.map(lab => lab.major)))];
+
+  // 수정: 학교 선택 시 해당 학교의 학과만 나오도록 majors 배열 생성
+  const majors = [
+    "All",
+    ...Array.from(
+      new Set(
+        labs
+          .filter(lab => selectedUniversity === "All" || lab.university === selectedUniversity)
+          .map(lab => lab.major)
+      )
+    ),
+  ];
 
   // 대학교와 학과별 필터링된 랩 목록
   const filteredLabs = labs.filter(lab => {
