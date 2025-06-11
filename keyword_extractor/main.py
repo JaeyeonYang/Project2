@@ -24,7 +24,12 @@ app = FastAPI(title="CV Keyword Extractor", version="1.0.0")
 # CORS 설정 (Next.js에서 호출 가능하도록)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+        allow_origins=[
+        "http://localhost:3000",      # 로컬
+        "http://127.0.0.1:3000",      # 로컬 대체
+        "http://172.31.131.201:3000", # 네트워크 IP
+        # 필요하다면 다른 개발용 호스트도 추가
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

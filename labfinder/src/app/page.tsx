@@ -1,133 +1,226 @@
-import Link from "next/link";
+'use client';
+
+import Link from 'next/link';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <div className="bg-[#1a365d] text-white">
-        <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
-              LabFinder
-            </h1>
-            <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed text-white/90">
-              AI 기반 연구실 매칭 서비스로, 당신의 연구 경력과 관심사를 분석하여
-              <br className="hidden md:block" />
-              최적의 연구실을 추천해드립니다.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Why Choose LabFinder?
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            AI 기술을 활용한 맞춤형 연구실 추천으로, 당신의 연구 경력을 한 단계 더 발전시켜보세요.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="w-12 h-12 bg-[#1a365d]/10 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-[#1a365d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">CV 분석</h3>
-            <p className="text-gray-600">
-              이력서와 활동 이력을 AI가 분석하여 연구 관심사와 역량을 파악합니다.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="w-12 h-12 bg-[#1a365d]/10 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-[#1a365d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">맞춤형 추천</h3>
-            <p className="text-gray-600">
-              유사도 분석을 통해 당신에게 가장 적합한 연구실을 추천해드립니다.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div className="w-12 h-12 bg-[#1a365d]/10 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-[#1a365d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">전문 데이터베이스</h3>
-            <p className="text-gray-600">
-              전 세계 주요 대학의 연구실 정보를 한눈에 확인하고 검색할 수 있습니다.
-            </p>
-          </div>
-        </div>
-
-        {/* Main Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <Link href="/upload" className="block">
-            <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 bg-[#1a365d]/10 rounded-lg flex items-center justify-center">
-                  <svg className="w-6 h-6 text-[#1a365d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900">CV 업로드</h2>
-              </div>
-              <p className="text-gray-600 mb-4">
-                이력서를 업로드하여 AI가 분석한 맞춤형 연구실 추천을 받아보세요.
+      <section className="relative bg-gradient-to-b from-blue-50 to-white py-20">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h1 className="text-5xl font-bold text-gray-900 mb-6">
+                Find Your Perfect Research Lab
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">
+                Discover research opportunities that match your interests and goals using our AI-powered lab matching system.
               </p>
-              <div className="text-[#1a365d] font-medium flex items-center gap-2">
-                시작하기
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+              <div className="space-x-4">
+                <Link
+                  href="/upload"
+                  className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                >
+                  Start Your Search
+                </Link>
+                <Link
+                  href="/database"
+                  className="inline-block bg-white text-blue-600 border-2 border-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+                >
+                  Browse Database
+                </Link>
               </div>
-            </div>
-          </Link>
-
-          <Link href="/database" className="block">
-            <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 bg-[#1a365d]/10 rounded-lg flex items-center justify-center">
-                  <svg className="w-6 h-6 text-[#1a365d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900">연구실 데이터베이스</h2>
-              </div>
-              <p className="text-gray-600 mb-4">
-                전 세계 주요 대학의 연구실 정보를 검색하고 필터링해보세요.
-              </p>
-              <div className="text-[#1a365d] font-medium flex items-center gap-2">
-                둘러보기
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-gray-500">
-            <p>&copy; 2024 LabFinder Group 3. All rights reserved.</p>
-            <div className="mt-2 space-x-4">
-              <Link href="/about" className="hover:text-[#1a365d]">서비스 소개</Link>
-              <Link href="/contact" className="hover:text-[#1a365d]">문의하기</Link>
-            </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative h-[400px]"
+            >
+              <Image
+                src="/hero-illustration.svg"
+                alt="AI Lab Matching Illustration"
+                fill
+                className="object-contain"
+                priority
+              />
+            </motion.div>
           </div>
         </div>
-      </footer>
-    </div>
+      </section>
+
+      {/* Service Introduction */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">Why Choose Our Service?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="p-6 rounded-lg bg-blue-50"
+            >
+              <div className="text-blue-600 text-4xl mb-4">🔍</div>
+              <h3 className="text-xl font-semibold mb-3">Smart Matching</h3>
+              <p className="text-gray-600">
+                Our AI analyzes your interests and matches you with the most relevant research labs.
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="p-6 rounded-lg bg-blue-50"
+            >
+              <div className="text-blue-600 text-4xl mb-4">📚</div>
+              <h3 className="text-xl font-semibold mb-3">Comprehensive Database</h3>
+              <p className="text-gray-600">
+                Access detailed information about research labs from top universities worldwide.
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="p-6 rounded-lg bg-blue-50"
+            >
+              <div className="text-blue-600 text-4xl mb-4">🎯</div>
+              <h3 className="text-xl font-semibold mb-3">Personalized Results</h3>
+              <p className="text-gray-600">
+                Get tailored recommendations based on your research interests and career goals.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">1</div>
+              <h3 className="text-xl font-semibold mb-3">Enter Keywords</h3>
+              <p className="text-gray-600">
+                Input your research interests and keywords
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">2</div>
+              <h3 className="text-xl font-semibold mb-3">AI Analysis</h3>
+              <p className="text-gray-600">
+                Our AI analyzes your input and matches with labs
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">3</div>
+              <h3 className="text-xl font-semibold mb-3">View Results</h3>
+              <p className="text-gray-600">
+                Browse through matching labs and their details
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">4</div>
+              <h3 className="text-xl font-semibold mb-3">Take Action</h3>
+              <p className="text-gray-600">
+                Contact labs and start your research journey
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">Trusted by Top Universities</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-2xl font-bold text-gray-400"
+            >
+              Caltech
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-2xl font-bold text-gray-400"
+            >
+              Yale
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="text-2xl font-bold text-gray-400"
+            >
+              Stanford
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="text-2xl font-bold text-gray-400"
+            >
+              MIT
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-blue-600">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-3xl font-bold text-white mb-6">
+              Ready to Find Your Perfect Research Lab?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8">
+              Start your journey today and discover research opportunities that match your interests.
+            </p>
+            <Link
+              href="/upload"
+              className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+            >
+              Get Started Now
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+    </main>
   );
 }
