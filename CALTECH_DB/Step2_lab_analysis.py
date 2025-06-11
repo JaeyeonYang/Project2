@@ -64,7 +64,7 @@ def analyze_labs(department):
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     
     # CSV 파일 읽기
-    input_file = f'/Users/jaeyeonyang/Dropbox/학교/강의/EF/AI programming/Project2/CALTECH_DB/faculty_url_Chemistry_and_Chemical_engineering.csv'
+    input_file = f'/Users/jaeyeonyang/Dropbox/학교/강의/EF/AI programming/Project2/CALTECH_DB/faculty_url_Enginnering_and_applied_science.csv'
     output_file = f'{department.capitalize()}.txt'
     
     try:
@@ -109,5 +109,5 @@ def analyze_labs(department):
 
 if __name__ == "__main__":
     # Example usage
-    department = "me"  # Change this to the desired department
+    department = "Enginnering_and_applied_science"  # Change this to the desired department
     analyze_labs(department) 
