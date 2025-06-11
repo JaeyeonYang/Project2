@@ -1,39 +1,62 @@
 import json
 import os
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import re
 from pathlib import Path
+from difflib import SequenceMatcher
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+import nltk
+from collections import Counter
+import logging
+
+# 로깅 설정
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# NLTK 데이터 다운로드
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords')
 
 class LabMatcher:
-    def __init__(self):
+    def __init__(self, data_path: str = None):
         self.labs_data = []
         self.vectorizer = None
         self.lab_vectors = None
+        self.stop_words = set(stopwords.words('english'))
+        self.data_path = data_path or os.path.join(os.path.dirname(__file__), '..', 'labfinder', 'src', 'app', 'database', 'page.tsx')
         self.load_labs_data()
     
     def load_labs_data(self):
         """연구실 데이터 로드"""
         try:
-            # DB_addall.py에서 생성된 database 페이지를 파싱해서 연구실 데이터 추출
-            database_file = Path("../labfinder/src/app/database/page.tsx")
+            database_file = Path(self.data_path)
             
             if database_file.exists():
                 self._parse_database_file(database_file)
             else:
-                # 직접 텍스트 파일들에서 파싱
+                logger.warning(f"Database file not found at {database_file}")
                 self._parse_txt_files()
             
-            print(f"📚 연구실 데이터 로드 완료: {len(self.labs_data)}개 연구실")
+            logger.info(f"Loaded {len(self.labs_data)} labs")
             
             if self.labs_data:
                 self._prepare_vectors()
+            else:
+                logger.warning("No lab data available, loading dummy data")
+                self._load_dummy_data()
         
         except Exception as e:
-            print(f"❌ 연구실 데이터 로드 실패: {str(e)}")
-            # 기본 더미 데이터
+            logger.error(f"Failed to load lab data: {str(e)}")
             self._load_dummy_data()
     
     def _parse_database_file(self, file_path):
@@ -52,11 +75,22 @@ class LabMatcher:
                 end_idx = content.find(end_marker, start_idx) + 1
                 json_str = content[start_idx:end_idx]
                 
-                self.labs_data = json.loads(json_str)
-                print(f"✅ Database 파일에서 {len(self.labs_data)}개 연구실 로드")
+                # JSON 파싱 전에 데이터 정리
+                json_str = json_str.replace("'", '"')  # 작은따옴표를 큰따옴표로 변경
+                
+                try:
+                    self.labs_data = json.loads(json_str)
+                    logger.info(f"Successfully loaded {len(self.labs_data)} labs from database file")
+                except json.JSONDecodeError as e:
+                    logger.error(f"JSON parsing error: {str(e)}")
+                    logger.error(f"Problematic JSON string: {json_str[:200]}...")  # 처음 200자만 로깅
+                    self._parse_txt_files()
+            else:
+                logger.warning("Could not find labs data in database file")
+                self._parse_txt_files()
         
         except Exception as e:
-            print(f"Database 파일 파싱 실패: {str(e)}")
+            logger.error(f"Database file parsing failed: {str(e)}")
             self._parse_txt_files()
     
     def _parse_txt_files(self):
@@ -144,68 +178,195 @@ class LabMatcher:
         if not self.labs_data:
             return
         
-        # 모든 연구실의 키워드 텍스트
+        # 연구실 정보를 구조화된 형태로 변환
         lab_texts = []
         for lab in self.labs_data:
-            text = f"{lab['keywords']} {lab['introduction']}"
-            lab_texts.append(text)
+            # 각 섹션별 가중치를 다르게 적용
+            sections = {
+                'keywords': 2.0,  # 키워드에 가장 높은 가중치
+                'introduction': 1.5,  # 소개문에 중간 가중치
+                'major': 1.0,  # 학과에 기본 가중치
+                'university': 0.5  # 대학에 낮은 가중치
+            }
+            
+            # 각 섹션을 가중치에 따라 반복
+            text_parts = []
+            for section, weight in sections.items():
+                if section in lab:
+                    # 가중치에 따라 섹션을 반복
+                    text_parts.extend([lab[section]] * int(weight))
+            
+            lab_texts.append(' '.join(text_parts))
         
-        # TF-IDF 벡터화
+        # TF-IDF 벡터화 파라미터 최적화
         self.vectorizer = TfidfVectorizer(
-            max_features=1000,
+            max_features=5000,
             stop_words='english',
-            ngram_range=(1, 2),
-            lowercase=True
+            ngram_range=(1, 3),  # 1-3 단어 조합까지 고려
+            lowercase=True,
+            min_df=1,
+            max_df=0.9,
+            sublinear_tf=True,  # 로그 스케일링
+            use_idf=True,
+            smooth_idf=True,
+            norm='l2'
         )
         
         self.lab_vectors = self.vectorizer.fit_transform(lab_texts)
-        print(f"✅ {len(lab_texts)}개 연구실 벡터화 완료")
+        logger.info(f"Vectorized {len(lab_texts)} labs")
+    
+    def _find_common_keywords(self, cv_keywords: List[str], lab_keywords: List[str]) -> List[str]:
+        """개선된 공통 키워드 찾기 (더욱 완화된 버전)"""
+        cv_set = set([kw.lower().strip() for kw in cv_keywords])
+        lab_set = set([kw.lower().strip() for kw in lab_keywords])
+        
+        # 정확한 매치
+        exact_matches = cv_set.intersection(lab_set)
+        
+        # 부분 매치 (더욱 완화된 알고리즘)
+        partial_matches = set()
+        
+        # 1. 문자열 유사도 기반 매칭 (임계값 더 낮춤)
+        for cv_kw in cv_set:
+            for lab_kw in lab_set:
+                # SequenceMatcher를 사용한 문자열 유사도 계산
+                similarity = SequenceMatcher(None, cv_kw, lab_kw).ratio()
+                if similarity > 0.3:  # 50%에서 30%로 낮춤
+                    partial_matches.add(max(cv_kw, lab_kw, key=len))
+                # 포함 관계 확인 (더욱 유연하게)
+                elif any(token in lab_kw for token in cv_kw.split()) or any(token in cv_kw for token in lab_kw.split()):
+                    partial_matches.add(max(cv_kw, lab_kw, key=len))
+        
+        # 2. 토큰화 기반 매칭 (더욱 유연하게)
+        cv_tokens = set()
+        lab_tokens = set()
+        
+        for kw in cv_set:
+            cv_tokens.update(word_tokenize(kw.lower()))
+        for kw in lab_set:
+            lab_tokens.update(word_tokenize(kw.lower()))
+        
+        # 불용어 제거
+        cv_tokens = cv_tokens - self.stop_words
+        lab_tokens = lab_tokens - self.stop_words
+        
+        # 토큰 기반 매칭 (더욱 유연하게)
+        token_matches = cv_tokens.intersection(lab_tokens)
+        for token in token_matches:
+            # 토큰이 포함된 원래 키워드 찾기
+            for cv_kw in cv_set:
+                if token in cv_kw:
+                    partial_matches.add(cv_kw)
+            for lab_kw in lab_set:
+                if token in lab_kw:
+                    partial_matches.add(lab_kw)
+        
+        return list(exact_matches.union(partial_matches))
+    
+    def _calculate_similarity_scores(self, cv_keywords: List[str], lab: Dict[str, Any]) -> Tuple[float, float, float, float]:
+        """각 유사도 점수 계산 (더욱 완화된 버전)"""
+        # 1. 키워드 매칭 점수
+        lab_keywords = self._extract_keywords(lab['keywords'])
+        common_keywords = self._find_common_keywords(cv_keywords, lab_keywords)
+        keyword_score = len(common_keywords) / max(len(cv_keywords), len(lab_keywords))
+        
+        # 2. 연구 분야 매칭 점수 (더욱 완화)
+        research_score = 0.0
+        for cv_kw in cv_keywords:
+            for lab_kw in lab_keywords:
+                similarity = SequenceMatcher(None, cv_kw.lower(), lab_kw.lower()).ratio()
+                if similarity > 0.3:  # 0.4에서 0.3으로 낮춤
+                    research_score += 1.0
+                # 부분 일치도 고려 (더 많은 점수)
+                elif any(token in lab_kw.lower() for token in cv_kw.lower().split()):
+                    research_score += 0.7
+        research_score = min(research_score / len(cv_keywords), 1.0)
+        
+        # 3. 학과 매칭 점수 (더욱 완화)
+        major_score = 0.0
+        for kw in cv_keywords:
+            if kw.lower() in lab['major'].lower():
+                major_score = 1.0
+                break
+            # 부분 일치도 고려 (더 많은 점수)
+            elif any(token in lab['major'].lower() for token in kw.lower().split()):
+                major_score = 0.7
+                break
+        
+        # 4. 대학 매칭 점수 (더욱 완화)
+        university_score = 0.0
+        for kw in cv_keywords:
+            if kw.lower() in lab['university'].lower():
+                university_score = 0.7
+                break
+            # 부분 일치도 고려 (더 많은 점수)
+            elif any(token in lab['university'].lower() for token in kw.lower().split()):
+                university_score = 0.4
+                break
+        
+        return keyword_score, research_score, major_score, university_score
     
     def calculate_similarity(self, cv_keywords: List[str]) -> List[Dict[str, Any]]:
         """CV 키워드와 연구실 키워드 유사도 계산"""
         if not self.labs_data or not self.vectorizer:
+            logger.warning("No lab data or vectorizer available")
             return []
         
         try:
-            # CV 키워드를 하나의 텍스트로 합치기
-            cv_text = " ".join(cv_keywords)
-            
-            # CV 텍스트 벡터화
+            # CV 키워드를 문맥을 고려하여 결합
+            cv_text = ' '.join(cv_keywords)
             cv_vector = self.vectorizer.transform([cv_text])
             
             # 코사인 유사도 계산
             similarities = cosine_similarity(cv_vector, self.lab_vectors)[0]
             
-            # 결과 정리
             results = []
             for i, lab in enumerate(self.labs_data):
-                similarity_score = float(similarities[i])
+                # 기본 유사도 점수
+                base_similarity = float(similarities[i])
                 
-                # 공통 키워드 찾기
-                lab_keywords = self._extract_keywords(lab['keywords'])
-                common_keywords = self._find_common_keywords(cv_keywords, lab_keywords)
+                # 세부 유사도 점수 계산
+                keyword_score, research_score, major_score, university_score = self._calculate_similarity_scores(cv_keywords, lab)
+                
+                # 최종 점수 계산 (가중치 조정)
+                final_score = (
+                    base_similarity * 0.3 +  # 기본 유사도
+                    keyword_score * 0.3 +  # 키워드 매칭
+                    research_score * 0.2 +  # 연구 분야 매칭
+                    major_score * 0.15 +  # 학과 매칭
+                    university_score * 0.05  # 대학 매칭
+                )
+                
+                # 디버깅을 위한 로깅
+                logger.debug(f"Lab: {lab['name']}, Final Score: {final_score:.3f}, Base: {base_similarity:.3f}, "
+                           f"Keyword: {keyword_score:.3f}, Research: {research_score:.3f}")
                 
                 result = {
                     "id": lab["id"],
                     "name": lab["name"],
                     "major": lab["major"],
+                    "university": lab["university"],
                     "keywords": lab["keywords"],
                     "introduction": lab["introduction"],
-                    "similarity_score": similarity_score,
-                    "common_keywords": common_keywords,
-                    "match_count": len(common_keywords)
+                    "similarity_score": final_score,
+                    "base_similarity": base_similarity,
+                    "keyword_score": keyword_score,
+                    "research_score": research_score,
+                    "major_score": major_score,
+                    "university_score": university_score,
+                    "common_keywords": self._find_common_keywords(cv_keywords, self._extract_keywords(lab['keywords'])),
+                    "match_count": len(self._find_common_keywords(cv_keywords, self._extract_keywords(lab['keywords'])))
                 }
                 
                 results.append(result)
             
-            # 유사도 점수로 정렬 (내림차순)
+            # 최종 점수로 정렬
             results.sort(key=lambda x: x["similarity_score"], reverse=True)
-            
-            print(f"🎯 {len(results)}개 연구실 매칭 완료")
+            logger.info(f"Calculated similarity for {len(results)} labs")
             return results
         
         except Exception as e:
-            print(f"❌ 유사도 계산 실패: {str(e)}")
+            logger.error(f"Failed to calculate similarity: {str(e)}")
             return []
     
     def _extract_keywords(self, keyword_text: str) -> List[str]:
@@ -217,35 +378,56 @@ class LabMatcher:
         keywords = [kw.strip().lower() for kw in keyword_text.split(',')]
         return [kw for kw in keywords if kw]
     
-    def _find_common_keywords(self, cv_keywords: List[str], lab_keywords: List[str]) -> List[str]:
-        """공통 키워드 찾기"""
-        cv_set = set([kw.lower().strip() for kw in cv_keywords])
-        lab_set = set([kw.lower().strip() for kw in lab_keywords])
-        
-        # 정확한 매치
-        exact_matches = cv_set.intersection(lab_set)
-        
-        # 부분 매치 (포함 관계)
-        partial_matches = set()
-        for cv_kw in cv_set:
-            for lab_kw in lab_set:
-                if cv_kw in lab_kw or lab_kw in cv_kw:
-                    if len(cv_kw) > 2 and len(lab_kw) > 2:  # 너무 짧은 단어 제외
-                        partial_matches.add(max(cv_kw, lab_kw, key=len))
-        
-        return list(exact_matches.union(partial_matches))
-    
     def get_top_recommendations(self, cv_keywords: List[str], top_n: int = 10) -> List[Dict[str, Any]]:
-        """상위 N개 추천 연구실 반환"""
+        """상위 N개 추천 연구실 반환 (더욱 완화된 버전)"""
         all_results = self.calculate_similarity(cv_keywords)
         
-        # 최소 유사도 임계값 적용 (너무 낮은 점수는 제외)
+        if not all_results:
+            logger.warning("No results found in similarity calculation")
+            return []
+        
+        # 최소 유사도 임계값 적용 (더욱 낮춤)
         filtered_results = [
             result for result in all_results 
-            if result["similarity_score"] > 0.01 or result["match_count"] > 0
+            if result["similarity_score"] > 0.0001 or result["match_count"] > 0  # 0.001에서 0.0001로 낮춤
         ]
         
-        return filtered_results[:top_n]
+        logger.info(f"Filtered results: {len(filtered_results)} labs after threshold")
+        
+        if len(filtered_results) <= top_n:
+            return filtered_results
+        
+        # 대학별 그룹화 및 선택
+        university_groups = {}
+        for result in filtered_results:
+            university = result["university"]
+            if university not in university_groups:
+                university_groups[university] = []
+            university_groups[university].append(result)
+        
+        # 각 대학에서 최대 4개씩 선택 (3개에서 4개로 증가)
+        selected_results = []
+        remaining_slots = top_n
+        
+        # 1. 각 대학에서 상위 결과 선택
+        for university, results in university_groups.items():
+            if remaining_slots > 0:
+                selected_count = min(4, len(results), remaining_slots)  # 3에서 4로 증가
+                selected_results.extend(results[:selected_count])
+                remaining_slots -= selected_count
+        
+        # 2. 남은 자리 채우기
+        if remaining_slots > 0:
+            remaining_results = [
+                result for result in filtered_results 
+                if result not in selected_results
+            ]
+            selected_results.extend(remaining_results[:remaining_slots])
+        
+        # 최종 결과 정렬
+        selected_results.sort(key=lambda x: x["similarity_score"], reverse=True)
+        logger.info(f"Final recommendations: {len(selected_results)} labs")
+        return selected_results
     
     def get_lab_by_id(self, lab_id: str) -> Dict[str, Any]:
         """ID로 특정 연구실 정보 조회"""
