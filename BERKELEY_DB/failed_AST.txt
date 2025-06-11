@@ -1,6 +1,0 @@
-Failed URLs:
-==================================================
-Lab: david-attwood
-URL: http://ast.berkeley.edu/david-attwood/
-Reason: Failed to fetch content
-------------------------------
