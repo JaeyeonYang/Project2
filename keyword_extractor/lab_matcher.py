@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class LabMatcher:
     def __init__(
         self,
-        data_path: str = r"labfinder\src\app\database\labsData.ts",
+        data_path: str = "labfinder\src\app\database\labsData.ts",
         model_name: str = 'all-mpnet-base-v2'
     ):
         # 1) 고정된 경로로만 데이터로드
@@ -37,7 +37,6 @@ class LabMatcher:
     def load_labs_data(self):
         ts_file = Path(self.data_path)
         if not ts_file.exists():
-            self._load_dummy_data()
             return
 
         content = ts_file.read_text(encoding='utf-8')
