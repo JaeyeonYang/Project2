@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 import logging
 
 # Gemini API 설정
-GOOGLE_API_KEY = ""  # 여기에 API 키를 입력하세요
+GOOGLE_API_KEY = "AIzaSyBwmd3yfpzH-pHQESN_avzav0QcaKqch1Y"  # 여기에 API 키를 입력하세요
 genai.configure(api_key=GOOGLE_API_KEY)
 
 def get_page_content(url):
@@ -64,7 +64,7 @@ def analyze_labs(department):
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     
     # CSV 파일 읽기
-    input_file = f'PI_profile_{department}.csv'
+    input_file = f'/Users/jaeyeonyang/Dropbox/학교/강의/EF/AI programming/Project2/CALTECH_DB/faculty_url_Chemistry_and_Chemical_engineering.csv'
     output_file = f'{department.capitalize()}.txt'
     
     try:
