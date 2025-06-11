@@ -80,27 +80,13 @@ def analyze_labs(department):
     # 각 교수진의 웹사이트 분석
     for index, row in df.iterrows():
         name = row['name']
-        urls = row['additional_urls']
+        url = row['url']  # 단일 URL 사용
         
-        # diversity-equity-inclusion-belonging 링크 제외
-        if isinstance(urls, str):
-            urls = [url.strip() for url in urls.split(',')]
-            urls = [url for url in urls if 'diversity-equity-inclusion-belonging' not in url]
-        else:
-            urls = []
+        logging.info(f"\nProcessing {name}'s website...")
         
-        logging.info(f"\nProcessing {name}'s websites...")
-        
-        all_content = []
-        for url in urls:
-            content = get_page_content(url)
-            if content:
-                all_content.append(content)
-            time.sleep(1)  # 서버 부하 방지
-        
-        if all_content:
-            combined_content = ' '.join(all_content)
-            analysis = analyze_with_gemini(combined_content)
+        content = get_page_content(url)
+        if content:
+            analysis = analyze_with_gemini(content)
             
             if analysis:
                 results.append({
