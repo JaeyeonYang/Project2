@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class LabMatcher:
     def __init__(
         self,
-        data_path: str = r"labfinder\src\app\database\labsData.ts",
+        data_path: str = "labfinder\src\app\database\labsData.ts",
         model_name: str = 'all-mpnet-base-v2'
     ):
         # 1) 고정된 경로로만 데이터로드
@@ -37,7 +37,7 @@ class LabMatcher:
     def load_labs_data(self):
         ts_file = Path(self.data_path)
         if not ts_file.exists():
-            self._load_dummy_data()
+            print(f"Data file not found: {ts_file}")
             return
 
         content = ts_file.read_text(encoding='utf-8')
@@ -49,7 +49,8 @@ class LabMatcher:
         )
         m = pattern.search(content)
         if not m:
-            self._load_dummy_data()
+            print("No match found")
+        
             return
 
         json_str = m.group(1)
@@ -57,9 +58,11 @@ class LabMatcher:
         try:
             self.labs_data = json5.loads(json_str)
             logger.info(f"Loaded {len(self.labs_data)} labs via json5")
+            print(self.labs_data)
         except Exception as e:
             logger.error(f"json5 parsing failed: {e}")
-            self._load_dummy_data()
+            print(f"json5 parsing failed: {e}")
+
     def _load_dummy_data(self):
         """파싱 실패 시 기본 더미 데이터"""
         logger.info("Loading dummy lab data...")
