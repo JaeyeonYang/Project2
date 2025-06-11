@@ -2,7 +2,17 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { labs, Lab } from "./labsData"; // 데이터 import
+import { labs } from "./labsData"; // 데이터 import
+
+// Lab 타입 정의
+type Lab = {
+  id: string;
+  name: string;
+  major: string;
+  university: string;
+  keywords: string;
+  introduction: string;
+};
 
 export default function Database() {
   const [expandedLab, setExpandedLab] = useState<string | null>(null);

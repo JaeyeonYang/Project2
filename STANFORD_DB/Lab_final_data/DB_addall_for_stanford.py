@@ -60,10 +60,10 @@ def parse_lab_file(file_path):
         
         # Create lab entry
         lab = {
-            "id": f"{major_short}-{len(labs) + 1}",
+            "id": f"stanford-{major_short}-{len(labs) + 1}",
             "name": name,
             "major": major,  # 전체 학과명으로 저장
-            "university": "Stanford University",  # 학교 이름 추가
+            "university": "Stanford",  # 학교 이름 추가
             "keywords": keywords,
             "introduction": introduction
         }
@@ -105,127 +105,30 @@ def main():
         return
     
     # Write to the TypeScript file
-    output_path = r'C:\Users\chany\coding\Project2\labfinder\src\app\database\page.tsx'
+    output_path = r'C:\Users\kimji\OneDrive\바탕 화면\ai_project2\Project2\labfinder\src\app\database\labsData.ts'
     try:
         # 기존 파일 읽기
-        existing_labs = []
-        try:
-            with open(output_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-                # 기존 labs 배열 추출
-                start_marker = 'const labs: Lab[] = '
-                end_marker = '];'
-                start_idx = content.find(start_marker)
-                if start_idx != -1:
-                    start_idx += len(start_marker)
-                    end_idx = content.find(end_marker, start_idx)
-                    if end_idx != -1:
-                        existing_json = content[start_idx:end_idx]
-                        existing_labs = json.loads(existing_json)
-        except Exception as e:
-            print(f"기존 파일 읽기 실패 (새로 생성): {e}")
-            existing_labs = []
-
-        # 새로운 labs와 기존 labs 합치기
-        all_labs = existing_labs + all_labs
+        with open(output_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        # labs 배열의 끝을 찾기 (마지막 객체의 닫는 괄호 직전)
+        end_marker = '  }\n]'
+        end_idx = content.rfind(end_marker)
         
-        # 중복 제거 (id 기준)
-        seen_ids = set()
-        unique_labs = []
-        for lab in all_labs:
-            if lab['id'] not in seen_ids:
-                seen_ids.add(lab['id'])
-                unique_labs.append(lab)
-        
-        # TypeScript 파일 내용 생성
-        ts_content = """'use client';
-
-import Link from "next/link";
-import { useState } from "react";
-
-interface Lab {
-  id: string;
-  name: string;
-  major: string;
-  university: string;
-  keywords: string;
-  introduction: string;
-}
-
-const labs: Lab[] = """ + json.dumps(unique_labs, indent=2, ensure_ascii=False) + """;
-
-export default function Database() {
-  const [expandedLab, setExpandedLab] = useState<string | null>(null);
-
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8">Research Labs Database</h1>
-      <div className="space-y-4">
-        {labs.map((lab) => (
-          <div key={lab.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-            {/* Lab Header - Always Visible */}
-            <div 
-              className="p-4 cursor-pointer hover:bg-gray-50 flex justify-between items-center"
-              onClick={() => setExpandedLab(expandedLab === lab.id ? null : lab.id)}
-            >
-              <div>
-                <h2 className="text-xl font-semibold">{lab.name}</h2>
-                <p className="text-gray-600">{lab.major}</p>
-              </div>
-              <div className="text-gray-500">
-                {expandedLab === lab.id ? (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                  </svg>
-                ) : (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                )}
-              </div>
-            </div>
-
-            {/* Lab Details - Visible when expanded */}
-            {expandedLab === lab.id && (
-              <div className="p-4 border-t border-gray-100">
-                <div className="mb-4">
-                  <h3 className="text-sm font-semibold text-gray-500 mb-2">Research Keywords</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {lab.keywords.split(", ").map((keyword, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div className="mb-4">
-                  <h3 className="text-sm font-semibold text-gray-500 mb-2">Introduction</h3>
-                  <p className="text-gray-700 whitespace-pre-line">{lab.introduction}</p>
-                </div>
-                <Link href={`/lab/${lab.id}`}>
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                    View Full Details
-                  </button>
-                </Link>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}"""
+        if end_idx == -1:
+            print("Error: Could not find the end of labs array")
+            return
+            
+        # 새로운 labs 데이터를 기존 배열에 추가
+        # 마지막 객체 뒤에 쉼표 추가하고 새로운 데이터 삽입
+        # [1:-1]로 대괄호 제거!
+        new_content = content[:end_idx] + ',\n' + json.dumps(all_labs, indent=2, ensure_ascii=False)[1:-1] + content[end_idx:]
         
         # 파일 쓰기
         with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(ts_content)
+            f.write(new_content)
         
-        print(f"\nSuccessfully wrote {len(ts_content)} bytes to {output_path}")
-        print(f"Total labs after merge: {len(unique_labs)}")
-        print(f"New labs added: {len(all_labs) - len(existing_labs)}")
+        print(f"\nSuccessfully added {len(all_labs)} labs to {output_path}")
         
     except Exception as e:
         print(f"Error writing to file: {e}")

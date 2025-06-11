@@ -57,26 +57,36 @@ def analyze_with_gemini(content):
         logging.error(f"Error with Gemini API: {str(e)}")
         return None
 
-def analyze_labs(lab_urls):
+def analyze_labs():
     """
-    Analyze research labs from given URLs
-    Args:
-        lab_urls (list): List of lab website URLs
+    Analyze research labs from the CSV file
     """
     # Set up logging
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     
-    output_file = 'lab_analysis_results.txt'
+    # CSV 파일 경로
+    input_file = 'Chemical_and_Biomolecular_engineering.csv'
+    output_file = 'Chemical_and_Biomolecular_engineering.txt'
     failed_file = 'failed_urls.txt'
+    
+    try:
+        # CSV 파일 읽기
+        df = pd.read_csv(input_file)
+        logging.info(f"Successfully read {len(df)} faculty profiles from {input_file}")
+    except Exception as e:
+        logging.error(f"Error reading CSV file: {str(e)}")
+        return
     
     # 결과를 저장할 리스트
     results = []
     failed_urls = []
     
-    # 각 연구실 웹사이트 분석
-    for url in lab_urls:
-        lab_name = url.split('/')[-2] if url.endswith('/') else url.split('/')[-1]
-        logging.info(f"\nProcessing {lab_name}'s website...")
+    # 각 교수진의 웹사이트 분석
+    for index, row in df.iterrows():
+        name = row['name']
+        url = row['url']
+        
+        logging.info(f"\nProcessing {name}'s website...")
         
         content = get_page_content(url)
         if content:
@@ -84,7 +94,7 @@ def analyze_labs(lab_urls):
             
             if analysis:
                 results.append({
-                    'lab_name': lab_name,
+                    'name': name,
                     'url': url,
                     'analysis': analysis
                 })
@@ -92,20 +102,20 @@ def analyze_labs(lab_urls):
                 # 결과를 파일에 저장
                 with open(output_file, 'a', encoding='utf-8') as f:
                     f.write(f"\n{'='*50}\n")
-                    f.write(f"Lab: {lab_name}\n")
+                    f.write(f"Professor: {name}\n")
                     f.write(f"URL: {url}\n")
                     f.write(f"Analysis:\n{analysis}\n")
                 
-                logging.info(f"Successfully analyzed {lab_name}'s lab")
+                logging.info(f"Successfully analyzed {name}'s lab")
             else:
                 failed_urls.append({
-                    'lab_name': lab_name,
+                    'name': name,
                     'url': url,
                     'reason': 'Failed to analyze content'
                 })
         else:
             failed_urls.append({
-                'lab_name': lab_name,
+                'name': name,
                 'url': url,
                 'reason': 'Failed to fetch content'
             })
@@ -118,7 +128,7 @@ def analyze_labs(lab_urls):
             f.write("Failed URLs:\n")
             f.write("="*50 + "\n")
             for failed in failed_urls:
-                f.write(f"Lab: {failed['lab_name']}\n")
+                f.write(f"Professor: {failed['name']}\n")
                 f.write(f"URL: {failed['url']}\n")
                 f.write(f"Reason: {failed['reason']}\n")
                 f.write("-"*30 + "\n")
@@ -129,31 +139,4 @@ def analyze_labs(lab_urls):
     return results
 
 if __name__ == "__main__":
-    # 연구실 URL 리스트
-    lab_urls = [
-        "https://andersonlab.qb3.berkeley.edu/",
-        "https://arkinlab.bio/",
-        "http://clarklab.berkeley.edu/",
-        "https://conboylab.berkeley.edu/",
-        "https://bisl.berkeley.edu/",
-        "https://dueberlab.berkeley.edu/",
-        "https://fletchlab.berkeley.edu/",
-        "https://bioeng.berkeley.edu/person/leah-guthrie",
-        "https://thglab.berkeley.edu/",
-        "https://bioeng.berkeley.edu/person/kevin-healy",
-        "https://bioeng.berkeley.edu/person/amy-e-herr",
-        "https://bioeng.berkeley.edu/person/ian-holmes",
-        "https://bioeng.berkeley.edu/person/patrick-hsu",
-        "https://bioeng.berkeley.edu/person/sanjay-kumar",
-        "https://bioeng.berkeley.edu/person/liana-lareau",
-        "https://leelab.berkeley.edu/",
-        "https://liepmannlab.squarespace.com/",
-        "https://www.marriottlab.com/",
-        "https://bioinspiredmaterials.berkeley.edu/",
-        "https://biomechanics.berkeley.edu/",
-        "https://murthylab.berkeley.edu/",
-        "https://streetslab.com/",
-        "https://www.michaelyartsev.com/"
-    ]
-    
-    analyze_labs(lab_urls) 
+    analyze_labs() 
