@@ -113,33 +113,31 @@ def main():
                 
             # 줄바꿈 문자 통일 (CRLF -> LF)
             content = content.replace('\r\n', '\n')
-                
-            # labs 배열의 끝을 찾기 (`];` 패턴)
-            end_marker = '];'
+            
+            # labs 배열의 끝을 찾기
+            end_marker = '];\n\nexport default labs;'
             end_idx = content.rfind(end_marker)
-
+            
             if end_idx == -1:
-                logging.error("Error: Could not find the end of labs array in existing file. Make sure it ends with '];'")
+                logging.error("Error: Could not find the end marker in the file")
                 return
 
-            # 새로운 labs 데이터를 JSON 문자열로 변환하고 대괄호 제거
-            new_labs_json_part = json.dumps(all_labs, indent=2, ensure_ascii=False)[1:-1]
-
-            # 기존 배열이 비어있는지 확인 (`];` 바로 앞에 `[`가 있는지)
-            # 즉, 'export const labs: Lab[] = [];' 인 경우
+            # 새로운 labs 데이터를 JSON 문자열로 변환
+            new_labs_json = json.dumps(all_labs, indent=2, ensure_ascii=False)
+            
+            # 기존 데이터가 있는지 확인
             if content[end_idx - 1].strip() == '[':
-                # 배열이 비어있으면 쉼표 없이 추가 (예: [] -> [new_data])
-                final_content = content[:end_idx] + new_labs_json_part + content[end_idx:]
+                # 배열이 비어있으면 쉼표 없이 추가
+                final_content = content[:end_idx] + new_labs_json[1:-1] + content[end_idx:]
             else:
-                # 배열이 비어있지 않으면 쉼표 추가 후 추가 (예: [existing] -> [existing, new_data])
-                # 기존 마지막 객체와 새 데이터 사이에 쉼표와 줄바꿈 추가
-                final_content = content[:end_idx] + ',\n' + new_labs_json_part + content[end_idx:]
+                # 기존 데이터가 있으면 쉼표와 줄바꿈 추가
+                final_content = content[:end_idx] + ',\n' + new_labs_json[1:-1] + content[end_idx:]
 
             # 파일 쓰기
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(final_content)
 
-            logging.info(f"\nSuccessfully added {len(all_labs)} labs to {output_path}")
+            logging.info(f"\nSuccessfully added {len(all_labs)} Yale labs to {output_path}")
 
         except Exception as e:
             logging.error(f"Error writing to file: {e}")
