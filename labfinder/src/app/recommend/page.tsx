@@ -1,6 +1,4 @@
 "use client";
-import { slugify } from "@/app/utils/slugify";
-
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,6 +6,7 @@ import { useRouter } from "next/navigation";
 interface Lab {
   id: string;
   name: string;
+  slug: string;
   university: string;
   major: string;
   keywords: string;
@@ -130,7 +129,7 @@ export default function Recommend() {
                   )}
                 </div>
                 <div className="ml-4">
-                  <Link href={`/lab/${lab.id}`} className="inline-block">
+                  <Link href={`/lab/${lab.slug}`} className="inline-block">
                     <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                       View Details
                     </button>

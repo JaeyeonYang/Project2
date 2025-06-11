@@ -11,6 +11,14 @@ from sentence_transformers import SentenceTransformer, util
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+def slugify(text: str) -> str:
+    if not text:
+        return ""
+    text = text.lower()
+    text = re.sub(r'\s+', '-', text)
+    text = re.sub(r'[^\w\-]', '', text)
+    return text
+
 # Lab 타입 정의 (page.tsx와 일치)
 class Lab:
     def __init__(self, id: str, name: str, major: str, university: str, keywords: str, introduction: str):
@@ -20,11 +28,13 @@ class Lab:
         self.university = university
         self.keywords = keywords
         self.introduction = introduction
+        self.slug = slugify(name)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "id": self.id,
             "name": self.name,
+            "slug": self.slug,
             "major": self.major,
             "university": self.university,
             "keywords": self.keywords,
