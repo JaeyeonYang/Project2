@@ -18,7 +18,7 @@ export default function Home() {
             >
               <h1 className="text-5xl font-bold text-gray-900 mb-6">
                 Find Your Perfect Research Lab
-              </h1>
+            </h1>
               <p className="text-xl text-gray-600 mb-8">
                 Discover research opportunities that match your interests and goals using our AI-powered lab matching system.
               </p>
@@ -68,9 +68,9 @@ export default function Home() {
             >
               <div className="text-blue-600 text-4xl mb-4">🔍</div>
               <h3 className="text-xl font-semibold mb-3">Smart Matching</h3>
-              <p className="text-gray-600">
+            <p className="text-gray-600">
                 Our AI analyzes your interests and matches you with the most relevant research labs.
-              </p>
+            </p>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -80,9 +80,9 @@ export default function Home() {
             >
               <div className="text-blue-600 text-4xl mb-4">📚</div>
               <h3 className="text-xl font-semibold mb-3">Comprehensive Database</h3>
-              <p className="text-gray-600">
+            <p className="text-gray-600">
                 Access detailed information about research labs from top universities worldwide.
-              </p>
+            </p>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -92,9 +92,9 @@ export default function Home() {
             >
               <div className="text-blue-600 text-4xl mb-4">🎯</div>
               <h3 className="text-xl font-semibold mb-3">Personalized Results</h3>
-              <p className="text-gray-600">
+            <p className="text-gray-600">
                 Get tailored recommendations based on your research interests and career goals.
-              </p>
+            </p>
             </motion.div>
           </div>
         </div>
@@ -153,7 +153,7 @@ export default function Home() {
                 Contact labs and start your research journey
               </p>
             </motion.div>
-          </div>
+            </div>
         </div>
       </section>
 
@@ -219,7 +219,7 @@ export default function Home() {
               Get Started Now
             </Link>
           </motion.div>
-        </div>
+    </div>
       </section>
     </main>
   );

@@ -42,7 +42,7 @@ export default function Upload() {
         setError(null);
       } else {
         setError("Please upload a PDF file");
-      }
+    }
     }
   }, []);
 
@@ -142,9 +142,9 @@ export default function Upload() {
                       <span className="bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-700 transition-colors">
                         Browse Files
                       </span>
-                      <input
-                        type="file"
-                        accept=".pdf"
+          <input 
+            type="file" 
+            accept=".pdf"
                         onChange={handleFileChange}
                         className="hidden"
                       />
@@ -167,15 +167,15 @@ export default function Upload() {
 
             {/* Upload Button */}
             <div className="mt-6">
-              <button
+          <button 
                 onClick={handleUpload}
                 disabled={isUploading || !file}
                 className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors ${
                   isUploading || !file
                     ? "bg-gray-300 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700 text-white"
-                }`}
-              >
+            }`}
+          >
                 {isUploading ? (
                   <span className="flex items-center justify-center">
                     <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -187,20 +187,20 @@ export default function Upload() {
                 ) : (
                   "Extract Keywords"
                 )}
-              </button>
-            </div>
+          </button>
+        </div>
 
             {/* Error Message */}
-            {error && (
+        {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center text-red-700"
               >
                 <FiAlertCircle className="h-5 w-5 mr-2" />
-                {error}
+            {error}
               </motion.div>
-            )}
+        )}
 
             {/* Keywords Section */}
             {extractedKeywords.length > 0 && (
@@ -209,14 +209,14 @@ export default function Upload() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-8"
               >
-                <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-gray-900">
                     Extracted Keywords
                   </h2>
                   <span className="text-sm text-gray-500">
                     {extractedKeywords.length} keywords found
                   </span>
-                </div>
+              </div>
 
                 {/* Add Keyword Input */}
                 <div className="mb-4 flex gap-2">
@@ -235,7 +235,7 @@ export default function Upload() {
                     <FiPlus className="mr-1" />
                     Add
                   </button>
-                </div>
+              </div>
 
                 <div className="flex flex-wrap gap-2">
                   {extractedKeywords.map((keyword, index) => (

@@ -9,15 +9,6 @@ from lab_matcher import LabMatcher
 from pydantic import BaseModel
 from typing import List
 import uvicorn
-import re
-
-def slugify(text: str):
-    if not text:
-        return ""
-    text = text.lower()
-    text = re.sub(r'\s+', '-', text)
-    text = re.sub(r'[^\w\-]', '', text)
-    return text
 
 app = FastAPI(title="CV Keyword Extractor", version="1.0.0")
 
@@ -43,7 +34,7 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 extractor = KeywordExtractor()
 lab_matcher = LabMatcher()
 # 슬러그 기반 조회를 위한 딕셔너리 생성
-lab_matcher.labs_by_slug = {slugify(lab.name): lab for lab in lab_matcher.labs_data}
+lab_matcher.labs_by_slug = {lab.slug: lab.to_dict() for lab in lab_matcher.labs_data}
 
 # 요청 모델 정의
 class KeywordSearchRequest(BaseModel):
@@ -141,6 +132,20 @@ async def recommend_labs(request: KeywordSearchRequest):
         raise HTTPException(
             status_code=500,
             detail=f"추천 처리 중 오류가 발생했습니다: {str(e)}"
+        )
+
+@app.get("/all-labs")
+async def get_all_labs():
+    """모든 연구실 목록 조회"""
+    try:
+        return JSONResponse(content={
+            "success": True,
+            "labs": lab_matcher.labs_data
+        })
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"전체 연구실 목록을 가져오는 중 오류가 발생했습니다: {str(e)}"
         )
 
 @app.get("/lab-by-slug/{slug}")
