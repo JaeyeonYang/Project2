@@ -156,8 +156,7 @@ async def get_lab_detail(lab_id: str):
 async def health_check():
     return {
         "status": "healthy",
-        "openai_configured": extractor.is_openai_configured(),
-        "fallback_ready": True,
+        "gemini_configured": extractor.is_configured(),
         "labs_loaded": len(lab_matcher.labs_data),
         "matching_ready": lab_matcher.vectorizer is not None
     }
