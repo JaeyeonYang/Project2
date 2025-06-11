@@ -1,6 +1,0 @@
-Failed URLs:
-==================================================
-Professor: Douglas Clark
-URL:  https://ww25.clarklab.org/?subid1=20250612-0331-03a4-b8a4-3588d011b401
-Reason: Failed to fetch content
-------------------------------
