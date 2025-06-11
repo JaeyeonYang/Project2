@@ -7,36 +7,62 @@ import { labs, Lab } from "./labsData"; // 데이터 import
 export default function Database() {
   const [expandedLab, setExpandedLab] = useState<string | null>(null);
   const [selectedUniversity, setSelectedUniversity] = useState<string>("All");
+  const [selectedMajor, setSelectedMajor] = useState<string>("All");
 
-  // 중복 없는 대학교 목록 만들기
-  const universities = ["All", ...new Set(labs.map(lab => lab.university))];
+  // 중복 없는 대학교와 학과 목록 만들기
+  const universities = ["All", ...Array.from(new Set(labs.map(lab => lab.university)))];
+  const majors = ["All", ...Array.from(new Set(labs.map(lab => lab.major)))];
 
-  // 대학교별 필터링된 랩 목록
+  // 대학교와 학과별 필터링된 랩 목록
   const filteredLabs = labs.filter(lab => {
-    return selectedUniversity === "All" || lab.university === selectedUniversity;
+    const universityMatch = selectedUniversity === "All" || lab.university === selectedUniversity;
+    const majorMatch = selectedMajor === "All" || lab.major === selectedMajor;
+    return universityMatch && majorMatch;
   });
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <h1 className="text-3xl font-bold mb-8">Research Labs Database</h1>
 
-      {/* 대학교 필터 추가 */}
-      <div className="mb-6">
-        <label htmlFor="university-filter" className="block text-sm font-medium text-gray-700 mb-2">
-          Filter by University
-        </label>
-        <select
-          id="university-filter"
-          value={selectedUniversity}
-          onChange={(e) => setSelectedUniversity(e.target.value)}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        >
-          {universities.map((university) => (
-            <option key={university} value={university}>
-              {university}
-            </option>
-          ))}
-        </select>
+      {/* 필터 섹션 */}
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* 대학교 필터 */}
+        <div>
+          <label htmlFor="university-filter" className="block text-sm font-medium text-gray-700 mb-2">
+            Filter by University
+          </label>
+          <select
+            id="university-filter"
+            value={selectedUniversity}
+            onChange={(e) => setSelectedUniversity(e.target.value)}
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            {universities.map((university) => (
+              <option key={university} value={university}>
+                {university}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 학과 필터 */}
+        <div>
+          <label htmlFor="major-filter" className="block text-sm font-medium text-gray-700 mb-2">
+            Filter by Major
+          </label>
+          <select
+            id="major-filter"
+            value={selectedMajor}
+            onChange={(e) => setSelectedMajor(e.target.value)}
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            {majors.map((major) => (
+              <option key={major} value={major}>
+                {major}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -51,6 +77,16 @@ export default function Database() {
                 <h2 className="text-xl font-semibold">{lab.name}</h2>
                 <p className="text-gray-600">{lab.major}</p>
                 <p className="text-gray-600">{lab.university}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {lab.keywords.split(", ").slice(0, 3).map((keyword, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full"
+                    >
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
               </div>
               <div className="text-gray-500">
                 {expandedLab === lab.id ? (
