@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 import logging
 
 # Gemini API 설정
-GOOGLE_API_KEY = ""  # 여기에 API 키를 입력하세요
+GOOGLE_API_KEY = "AIzaSyBwmd3yfpzH-pHQESN_avzav0QcaKqch1Y"  # 여기에 API 키를 입력하세요
 genai.configure(api_key=GOOGLE_API_KEY)
 
 def get_page_content(url):
@@ -64,7 +64,7 @@ def analyze_labs(department):
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     
     # CSV 파일 읽기
-    input_file = f'PI_profile_{department}.csv'
+    input_file = f'/Users/jaeyeonyang/Dropbox/학교/강의/EF/AI programming/Project2/CALTECH_DB/faculty_url_Chemistry_and_Chemical_engineering.csv'
     output_file = f'{department.capitalize()}.txt'
     
     try:
@@ -80,27 +80,13 @@ def analyze_labs(department):
     # 각 교수진의 웹사이트 분석
     for index, row in df.iterrows():
         name = row['name']
-        urls = row['additional_urls']
+        url = row['url']  # 단일 URL 사용
         
-        # diversity-equity-inclusion-belonging 링크 제외
-        if isinstance(urls, str):
-            urls = [url.strip() for url in urls.split(',')]
-            urls = [url for url in urls if 'diversity-equity-inclusion-belonging' not in url]
-        else:
-            urls = []
+        logging.info(f"\nProcessing {name}'s website...")
         
-        logging.info(f"\nProcessing {name}'s websites...")
-        
-        all_content = []
-        for url in urls:
-            content = get_page_content(url)
-            if content:
-                all_content.append(content)
-            time.sleep(1)  # 서버 부하 방지
-        
-        if all_content:
-            combined_content = ' '.join(all_content)
-            analysis = analyze_with_gemini(combined_content)
+        content = get_page_content(url)
+        if content:
+            analysis = analyze_with_gemini(content)
             
             if analysis:
                 results.append({
