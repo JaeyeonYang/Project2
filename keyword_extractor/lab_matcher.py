@@ -8,27 +8,43 @@ import json5
 from sentence_transformers import SentenceTransformer, util
 
 # 로깅 설정
-logging.basicConfig(level=logging.DEBUG)  # DEBUG 레벨로 변경하여 더 자세한 로그 확인
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+# Lab 타입 정의 (page.tsx와 일치)
+class Lab:
+    def __init__(self, id: str, name: str, major: str, university: str, keywords: str, introduction: str):
+        self.id = id
+        self.name = name
+        self.major = major
+        self.university = university
+        self.keywords = keywords
+        self.introduction = introduction
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "major": self.major,
+            "university": self.university,
+            "keywords": self.keywords,
+            "introduction": self.introduction
+        }
 
 class LabMatcher:
     def __init__(
         self,
-        data_path: str = "../labfinder/src/app/database/labsData.ts",  # 상대 경로 수정
+        data_path: str = "../labfinder/src/app/database/labsData.ts",
         model_name: str = 'all-mpnet-base-v2'
     ):
-        # 1) 데이터 경로 설정
         self.data_path = os.path.abspath(data_path)
         logger.info(f"Looking for lab data at: {self.data_path}")
-        self.labs_data: List[Dict[str, Any]] = []
+        self.labs_data: List[Lab] = []
 
-        # 2) SBERT 모델 로드
         logger.info(f"Loading SBERT model '{model_name}'...")
         self.sbert = SentenceTransformer(model_name)
         self.lab_embeddings = None
 
-        # 3) 데이터 파싱 & 임베딩
         self.load_labs_data()
         if not self.labs_data:
             logger.warning("No lab data found, loading dummy data...")
@@ -46,7 +62,6 @@ class LabMatcher:
             content = ts_file.read_text(encoding='utf-8')
             logger.debug(f"File content length: {len(content)}")
             
-            # TypeScript 파일에서 JSON 데이터 추출
             pattern = re.compile(
                 r'export\s+const\s+labs\s*:\s*Lab\[\]\s*=\s*'
                 r'(\[\s*[\s\S]*?\])\s*;',
@@ -60,10 +75,20 @@ class LabMatcher:
             json_str = m.group(1)
             logger.debug(f"Extracted JSON string length: {len(json_str)}")
             
-            # json5로 파싱 (더 유연한 JSON 파싱)
-            self.labs_data = json5.loads(json_str)
+            raw_data = json5.loads(json_str)
+            self.labs_data = [
+                Lab(
+                    id=item.get("id", ""),
+                    name=item.get("name", ""),
+                    major=item.get("major", ""),
+                    university=item.get("university", ""),
+                    keywords=item.get("keywords", ""),
+                    introduction=item.get("introduction", "")
+                )
+                for item in raw_data
+            ]
             logger.info(f"Successfully loaded {len(self.labs_data)} labs")
-            logger.debug(f"First lab data: {self.labs_data[0] if self.labs_data else 'No labs'}")
+            logger.debug(f"First lab data: {self.labs_data[0].to_dict() if self.labs_data else 'No labs'}")
             
         except Exception as e:
             logger.error(f"Error loading lab data: {str(e)}")
@@ -73,20 +98,22 @@ class LabMatcher:
         """Load dummy data if no real data is available"""
         logger.info("Loading dummy lab data...")
         self.labs_data = [
-            {
-                "id": "dummy-1",
-                "name": "AI Research Lab",
-                "major": "Computer Science",
-                "keywords": "artificial intelligence, machine learning, deep learning, neural networks, computer vision",
-                "introduction": "Leading research in artificial intelligence and machine learning applications."
-            },
-            {
-                "id": "dummy-2",
-                "name": "Robotics Lab",
-                "major": "Mechanical Engineering",
-                "keywords": "robotics, autonomous systems, control systems, sensor fusion, navigation",
-                "introduction": "Advanced robotics research focusing on autonomous navigation and manipulation."
-            }
+            Lab(
+                id="dummy-1",
+                name="AI Research Lab",
+                major="Computer Science",
+                university="Stanford University",
+                keywords="artificial intelligence, machine learning, deep learning, neural networks, computer vision",
+                introduction="Leading research in artificial intelligence and machine learning applications."
+            ),
+            Lab(
+                id="dummy-2",
+                name="Robotics Lab",
+                major="Mechanical Engineering",
+                university="MIT",
+                keywords="robotics, autonomous systems, control systems, sensor fusion, navigation",
+                introduction="Advanced robotics research focusing on autonomous navigation and manipulation."
+            )
         ]
 
     def _prepare_embeddings(self):
@@ -96,16 +123,15 @@ class LabMatcher:
             return
 
         try:
-            # Combine major, keywords, and introduction for better matching
             lab_texts = []
             for lab in self.labs_data:
                 text_parts = [
-                    lab.get('major', ''),
-                    lab.get('keywords', ''),
-                    lab.get('introduction', '')
+                    lab.major,
+                    lab.keywords,
+                    lab.introduction
                 ]
                 lab_texts.append(' '.join(filter(None, text_parts)))
-                logger.debug(f"Prepared text for lab {lab.get('name')}: {text_parts}")
+                logger.debug(f"Prepared text for lab {lab.name}: {text_parts}")
 
             logger.info(f"Encoding {len(lab_texts)} lab descriptions...")
             self.lab_embeddings = self.sbert.encode(
@@ -129,32 +155,22 @@ class LabMatcher:
             return []
 
         try:
-            # Combine user major and keywords
             cv_text = f"{user_major} {' '.join(cv_keywords)}"
             logger.info(f"Calculating similarity for: {cv_text}")
 
-            # Get CV embedding
             cv_emb = self.sbert.encode(cv_text, convert_to_tensor=True)
-
-            # Calculate cosine similarity
             cosine_scores = util.cos_sim(cv_emb, self.lab_embeddings)[0]
             scores = cosine_scores.cpu().numpy()
 
-            # Prepare results
             results = []
             for idx, lab in enumerate(self.labs_data):
-                if scores[idx] > 0.05:  # 임계값 낮춤
+                if scores[idx] > 0.05:
                     results.append({
-                        "id": lab.get("id"),
-                        "name": lab.get("name"),
-                        "major": lab.get("major"),
-                        "keywords": lab.get("keywords", ""),
-                        "introduction": lab.get("introduction", ""),
+                        **lab.to_dict(),
                         "similarity_score": float(scores[idx])
                     })
-                    logger.debug(f"Lab {lab.get('name')} score: {scores[idx]:.4f}")
+                    logger.debug(f"Lab {lab.name} score: {scores[idx]:.4f}")
 
-            # Sort by similarity score
             results.sort(key=lambda x: x["similarity_score"], reverse=True)
             logger.info(f"Found {len(results)} matching labs")
             return results
@@ -176,13 +192,12 @@ class LabMatcher:
     def get_lab_by_id(self, lab_id: str) -> Dict[str, Any]:
         """Get lab information by ID"""
         for lab in self.labs_data:
-            if lab.get("id") == lab_id:
-                return lab
+            if lab.id == lab_id:
+                return lab.to_dict()
         return None
 
 
 if __name__ == "__main__":
-    # Test code
     matcher = LabMatcher()
     sample_keywords = ["nanotechnology", "single cell proteomics", "NEMS"]
     tops = matcher.get_top_recommendations(sample_keywords, user_major="Bioengineering", top_n=5)
