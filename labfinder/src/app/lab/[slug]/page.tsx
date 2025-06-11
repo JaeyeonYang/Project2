@@ -1,40 +1,85 @@
 'use client';
 
-import React from "react";
-import { labs } from "../../database/labsData";
-import { slugify } from "@/app/utils/slugify";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
+interface Lab {
+  id: string;
+  name: string;
+  university: string;
+  major: string;
+  keywords: string;
+  introduction: string;
+}
+
 export default function LabDetailPage() {
-  const { slug } = useParams();
+  const params = useParams();
+  const slug = params?.slug as string;
   const router = useRouter();
+  const [lab, setLab] = useState<Lab | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // 디버깅용 로그
-  console.log("Current slug:", slug);
-  console.log("Available slugs:", labs.map(l => slugify(l.name)));
+  useEffect(() => {
+    if (slug) {
+      const fetchLabDetails = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+          const response = await fetch(`http://localhost:8000/lab-by-slug/${slug}`);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || "Lab not found");
+          }
+          const data = await response.json();
+          if (data.success) {
+            setLab(data.lab);
+          } else {
+            throw new Error("Failed to load lab details");
+          }
+        } catch (err: any) {
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchLabDetails();
+    }
+  }, [slug]);
 
-  // slug 기반으로 해당 연구실 찾기
-  const lab = labs.find(l => slugify(l.name) === slug);
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <p>Loading lab details...</p>
+      </div>
+    );
+  }
 
-  // 없는 slug면 404 혹은 리다이렉트
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-4 text-red-600">Error</h1>
+        <p className="text-gray-600">Could not load lab details: {error}</p>
+        <button
+          onClick={() => router.back()}
+          className="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
+
   if (!lab) {
     return (
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-4 text-red-600">Lab not found</h1>
-        <p className="text-gray-600">Requested slug: {slug}</p>
-        <p className="text-gray-600">
-          Try one of:{" "}
-          {labs
-            .map(l => slugify(l.name))
-            .slice(0, 10)
-            .join(", ")}
-          … and more.
-        </p>
+        <p className="text-gray-600">The requested lab with slug "{slug}" could not be found.</p>
         <button
-          onClick={() => router.push("/recommend")}
+          onClick={() => router.push("/upload")}
           className="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          Go back to recommendations
+          Upload a new CV
         </button>
       </div>
     );
