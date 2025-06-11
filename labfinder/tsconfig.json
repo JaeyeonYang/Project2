@@ -1,28 +1,35 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    // Target modern JS for Next.js
+    "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
+
+    // Allow JS files (optional)
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "esModuleInterop": true,
+    "incremental": true,
+
+    // Module resolution
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+
+    // React 17+ automatic JSX transform
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+
+    // Path alias (if you use src/ as base)
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  // Next.js 내장 타입파일과 모든 TS/TSX 파일을 포함
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
