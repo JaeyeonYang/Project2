@@ -43,7 +43,7 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 extractor = KeywordExtractor()
 lab_matcher = LabMatcher()
 # 슬러그 기반 조회를 위한 딕셔너리 생성
-lab_matcher.labs_by_slug = {slugify(lab['name']): lab for lab in lab_matcher.labs_data}
+lab_matcher.labs_by_slug = {slugify(lab.name): lab for lab in lab_matcher.labs_data}
 
 # 요청 모델 정의
 class KeywordSearchRequest(BaseModel):

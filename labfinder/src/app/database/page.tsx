@@ -182,16 +182,16 @@ export default function Database() {
                   {/* Lab Header */}
                   <div 
                     className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
-                    onClick={() => setExpandedLab(expandedLab === lab.id ? null : lab.id)}
-                  >
+              onClick={() => setExpandedLab(expandedLab === lab.id ? null : lab.id)}
+            >
                     <div className="flex justify-between items-start">
-                      <div>
+              <div>
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">{lab.name}</h2>
                         <div className="flex items-center text-gray-600 mb-3">
                           <span className="font-medium">{lab.university}</span>
                           <span className="mx-2">•</span>
                           <span>{lab.major}</span>
-                        </div>
+              </div>
                         <div className="flex flex-wrap gap-2">
                           {lab.keywords.split(", ").slice(0, 3).map((keyword, index) => (
                             <span
@@ -211,12 +211,12 @@ export default function Database() {
                       <div className="text-gray-400">
                         {expandedLab === lab.id ? <FiChevronUp size={24} /> : <FiChevronDown size={24} />}
                       </div>
-                    </div>
-                  </div>
+              </div>
+            </div>
 
                   {/* Lab Details */}
                   <AnimatePresence>
-                    {expandedLab === lab.id && (
+            {expandedLab === lab.id && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
@@ -227,30 +227,30 @@ export default function Database() {
                         <div className="p-6">
                           <div className="mb-6">
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">Research Keywords</h3>
-                            <div className="flex flex-wrap gap-2">
-                              {lab.keywords.split(", ").map((keyword, index) => (
-                                <span
-                                  key={index}
+                  <div className="flex flex-wrap gap-2">
+                    {lab.keywords.split(", ").map((keyword, index) => (
+                      <span
+                        key={index}
                                   className="bg-blue-50 text-blue-700 text-sm px-3 py-1 rounded-full"
-                                >
-                                  {keyword}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
+                      >
+                        {keyword}
+                      </span>
+                    ))}
+                  </div>
+                </div>
                           <div className="mb-6">
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">Introduction</h3>
                             <p className="text-gray-700 whitespace-pre-line leading-relaxed">
                               {lab.introduction}
                             </p>
-                          </div>
-                          <Link href={`/lab/${lab.id}`}>
-                            <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                              View Full Details
-                              <FiExternalLink className="ml-2" />
-                            </button>
-                          </Link>
-                        </div>
+                </div>
+                          <Link
+                            href={`/lab/${lab.id}`}
+                            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                          >
+                    View Full Details
+                </Link>
+              </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
