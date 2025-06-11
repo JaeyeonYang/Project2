@@ -1,12 +1,16 @@
-export function slugify(str: string) {
-    return str
-      .toLowerCase()
-      .trim()
-      .replace(/[\s\.]+/g, "-")      // 공백·마침표 → 대시
-      .replace(/[^a-z0-9\-]/g, "");   // 영문/숫자/대시만
-  }
-  export function unslugify(slug: string) {
-    return slug
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, char => char.toUpperCase());
-  }
+export const slugify = (text: string): string => {
+  if (!text) return '';
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')           // 공백을 -로 교체
+    .replace(/[^\w\-]+/g, '')       // 단어가 아닌 문자 제거
+    .replace(/\-\-+/g, '-');        // 여러 개의 -를 단일 -로 교체
+};
+
+export function unslugify(slug: string) {
+  return slug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, char => char.toUpperCase());
+}
