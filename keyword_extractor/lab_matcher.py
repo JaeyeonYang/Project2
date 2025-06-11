@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class LabMatcher:
     def __init__(
         self,
-        data_path: str = r"C:\Users\chany\coding\Project2\labfinder\src\app\database\labsData.ts",
+        data_path: str = r"labfinder\src\app\database\labsData.ts",
         model_name: str = 'all-mpnet-base-v2'
     ):
         # 1) 고정된 경로로만 데이터로드
