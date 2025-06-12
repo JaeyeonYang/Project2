@@ -1,0 +1,69 @@
+# Node modules
+/node_modules/
+
+# Next.js 빌드 결과물
+/.next/
+/out/
+
+# 환경 설정 파일
+.env
+.env.local
+.env.*.local
+
+# OS 및 에디터 임시 파일
+.DS_Store
+Thumbs.db
+.vscode/
+
+# 로그
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vercel
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+uploaded_files/
+.env
+*.log
