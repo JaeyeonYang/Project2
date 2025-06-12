@@ -27,7 +27,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",      # 로컬 개발용
         "http://127.0.0.1:3000",      # 로컬 대체
-        "http://172.31.131.201:3000", # 네트워크 IP
+        "http://172.31.192.215:3000", # 네트워크 IP
         "https://*.vercel.app",       # Vercel 배포용
         "https://*.onrender.com"      # Render 배포용
     ],
